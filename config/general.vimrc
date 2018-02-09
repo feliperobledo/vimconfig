@@ -40,3 +40,7 @@ autocmd Filetype java setlocal ts=4 sts=4 sw=4 expandtab
 
 "HTML language options
 autocmd FileType html setlocal ts=4 sts=4 sw=4 expandtab
+
+"css language options
+autocmd FileType css setlocal ts=4 sts=4 sw=4 expandtab
+
