@@ -10,6 +10,9 @@ Plug 'zchee/deoplete-clang'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 
+" Javascript extensions
+Plug 'vimlab/neojs'
+
 call plug#end()
 
 " Enable deoplete
