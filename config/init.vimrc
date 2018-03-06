@@ -4,8 +4,8 @@ set backupdir=~/.vim/.backup//
 set directory=~/.vim/.swp//
 
 " Neovim requires Python paths
-let g:python_host_pro = '/usr/bin/python'
-let g:python3_host_prog = '/usr/local/bin/python3'
+let g:python_host_prog = $HOME.'/.pyenv/versions/neovim2/bin/python'
+let g:python3_host_prog = $HOME.'/.pyenv/versions/neovim3/bin/python'
 
 " Change buffer directory to file's directory automatically
 set autochdir

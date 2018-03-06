@@ -5,6 +5,7 @@ Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 " Initialize plugin system
 
 Plug 'zchee/deoplete-clang'
+Plug 'zchee/deoplete-jedi'
 
 " Fuzzy file search
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
@@ -18,6 +19,20 @@ call plug#end()
 " Enable deoplete
 let g:deoplete#enable_at_startup = 1
 let g:deoplete#auto_complete_start_length = 1
+
+" =========================================================
+"       deoplete-jedi
+" =========================================================
+
+let g:deoplete#sources#jedi#server_timeout = 10
+let g:deoplete#sources#jedi#statement_length = 50
+let g:deoplete#sources#jedi#enable_cache = 1
+let g:deoplete#sources#jedi#show_docstring = 0
+" Use the following only if the VIRTUAL_ENV environment variable will not be set. Better to set it in on a per session basis.
+" let g:deoplete#sources#jedi#python_path - ''
+
+let g:deoplete#sources#jedi#debug_server = 0
+let g:deoplete#sources#jedi#extra_path = []
 
 " =========================================================
 "       deoplete-clang
