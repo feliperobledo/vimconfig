@@ -15,3 +15,6 @@ nnoremap <C-t>     :tabnew<CR>
 inoremap <F7>      <Esc>:tabprevious<CR>i
 inoremap <F8>      <Esc>:tabnext<CR>i
 inoremap <C-t>     <Esc>:tabnew<CR>i
+
+"Enable fuzzy file search
+nnoremap <C-p> :FuzzyOpen<CR>

@@ -8,8 +8,8 @@ Plug 'zchee/deoplete-clang'
 Plug 'zchee/deoplete-jedi'
 
 " Fuzzy file search
-Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
-Plug 'junegunn/fzf.vim'
+" requires: brew install ripgrep the_silver_searcher
+Plug 'cloudhead/neovim-fuzzy'
 
 " Javascript extensions
 Plug 'vimlab/neojs'
