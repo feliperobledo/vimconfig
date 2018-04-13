@@ -17,6 +17,9 @@ let &colorcolumn=join(range(141,999),",")
 set list!
 set listchars=tab:>-,trail:.,precedes:<,extends:>
 
+"Close neovim if the only window left is NERDTree
+autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+
 "Set the type of manual fold
 "--Types
 "  -- manual: in visual mode, press 
@@ -44,3 +47,11 @@ autocmd FileType html setlocal ts=4 sts=4 sw=4 expandtab
 "css language options
 autocmd FileType css setlocal ts=4 sts=4 sw=4 expandtab
 
+"typescript language options
+autocmd FileType typescript setlocal ts=4 sts=4 sw=4 expandtab
+
+"json files options
+autocmd FileType json setlocal ts=2 sts=2 sw=2 expandtab
+
+"ruby file options
+autocmd FileType ruby setlocal ts=2 sts=2 sw=2 expandtab

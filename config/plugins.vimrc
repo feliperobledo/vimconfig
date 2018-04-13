@@ -1,6 +1,6 @@
 call plug#begin('~/.config/nvim/plugged')
 
-Plug 'carlitux/deoplete-ternjs', { 'do': 'npm install -g tern' }
+"Plug 'carlitux/deoplete-ternjs', { 'do': 'npm install -g tern' }
 Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 " Initialize plugin system
 
@@ -10,6 +10,19 @@ Plug 'zchee/deoplete-jedi'
 " Fuzzy file search
 " requires: brew install ripgrep the_silver_searcher
 Plug 'cloudhead/neovim-fuzzy'
+
+" Enable silver searcher in editor
+Plug 'Numkil/ag.nvim'
+
+" Typescript extension
+Plug 'leafgarland/typescript-vim'
+Plug 'mhartington/nvim-typescript'
+
+" NerdTree for left sidebar for file hierarchy
+Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
+
+" Html and CSS autocompletion
+Plug 'mattn/emmet-vim'
 
 " Javascript extensions
 Plug 'vimlab/neojs'
