@@ -5,12 +5,6 @@ map <C-K> <C-W>k<C-W>_
 map <C-L> <C-W>l<C-W>_
 map <C-H> <C-W>h<C-W>_
 
-"Remap the movement keys
-noremap ; l
-noremap o k
-noremap l j
-noremap k h
-
 "Collapse each opened file into a single line with its filename
 set wmh=0
 
@@ -21,12 +15,12 @@ nnoremap <C-t>     :tabnew<CR>
 inoremap <F7>      <Esc>:tabprevious<CR>i
 inoremap <F8>      <Esc>:tabnext<CR>i
 inoremap <C-t>     <Esc>:tabnew<CR>i
+map <F2> :mksession! vim_session <cr> " Quick write session with F2
+map <F3> :source vim_session <cr>     " And load session with F3
 
 "Enable fuzzy file search
 nnoremap <C-p> :FuzzyOpen<CR>
 
-"Enable nerdtree
-map <C-n> :NERDTreeToggle<CR>
 
 " virtual tabstops using spaces
 let my_tab=4

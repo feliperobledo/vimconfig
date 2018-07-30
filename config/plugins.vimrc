@@ -7,16 +7,36 @@ Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 Plug 'zchee/deoplete-clang'
 Plug 'zchee/deoplete-jedi'
 
+" Plugin to surround word under cursor with whatever
+Plug 'tpope/vim-surround'
+
+" Working with APEX. Syntax highlighting
+Plug 'ejholmes/vim-forcedotcom'
+
+" Work with Git on Vim
+Plug 'tpope/vim-fugitive'
+
+" Goto package for python
+Plug 'davidhalter/jedi-vim'
+
+" Add color to every indentation level
+Plug 'nathanaelkane/vim-indent-guides'
+
 " Fuzzy file search
 " requires: brew install ripgrep the_silver_searcher
 Plug 'cloudhead/neovim-fuzzy'
+
+" Jenkins filesyntax
+Plug 'martinda/Jenkinsfile-vim-syntax'
 
 " Enable silver searcher in editor
 Plug 'Numkil/ag.nvim'
 
 " Typescript extension
 Plug 'leafgarland/typescript-vim'
-Plug 'mhartington/nvim-typescript'
+Plug 'peitalin/vim-jsx-typescript'
+" This is promising but broken
+" Plug 'mhartington/nvim-typescript', {'do': './install.sh' }
 
 " NerdTree for left sidebar for file hierarchy
 Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
@@ -24,7 +44,14 @@ Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
 " Html and CSS autocompletion
 Plug 'mattn/emmet-vim'
 
+" Better interface to make sessions. Works well with tmux-resurrect
+Plug 'tpope/vim-obsession'
+
+" Ruby plugins
+Plug 'vim-ruby/vim-ruby'
+
 " Javascript extensions
+Plug 'shougu/unite.vim'
 Plug 'vimlab/neojs'
 
 call plug#end()
@@ -101,3 +128,14 @@ let g:deoplete#sources#ternjs#filetypes = [
 " Use tern_for_vim.
 let g:tern#command = ["tern"]
 let g:tern#arguments = ["--persistent"]
+
+" =========================================================
+"       vim-indent-guidelines
+" =========================================================
+let g:indent_guides_enable_on_vim_startup = 0
+let g:indent_guides_auto_colors = 0
+let g:indent_guides_start_level = 2
+let g:indent_guides_guide_size = 1
+let g:indext_guides_color_change_percent = 1
+autocmd VimEnter,Colorscheme * :hi IndentGuidesOdd  ctermbg=22
+autocmd VimEnter,Colorscheme * :hi IndentGuidesEven ctermbg=136

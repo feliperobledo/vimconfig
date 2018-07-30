@@ -1,6 +1,3 @@
-"Display line numbers
-set number
-
 "Don't wrap lines by default
 "set nowrap
 set textwidth=140
@@ -28,6 +25,9 @@ autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isT
 "            -- z+d to delete all lines in the fold
 set foldmethod=manual
 
+" Use the OSX clipboard by default
+set clipboard=unnamed
+
 "C language options
 let c_no_trail_space_error = 1
 let c_no_tab_space_error = 1
@@ -49,9 +49,12 @@ autocmd FileType css setlocal ts=4 sts=4 sw=4 expandtab
 
 "typescript language options
 autocmd FileType typescript setlocal ts=4 sts=4 sw=4 expandtab
+autocmd BufNewFile,BufRead *.tsx,*.jsx set filetype=typescript.jsx
 
 "json files options
 autocmd FileType json setlocal ts=2 sts=2 sw=2 expandtab
 
 "ruby file options
 autocmd FileType ruby setlocal ts=2 sts=2 sw=2 expandtab
+autocmd BufNewFile,BufRead *.feature   set syntax=ruby
+
