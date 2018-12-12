@@ -6,9 +6,9 @@ set textwidth=140
 set mouse=a
 
 "Change Background color past the accepted line length
-set colorcolumn=140
-highlight ColorColumn ctermbg=235 guibg=#2c2d27
-let &colorcolumn=join(range(141,999),",")
+" set colorcolumn=140
+" highlight ColorColumn ctermbg=235 guibg=#2c2d27
+" let &colorcolumn=join(range(141,999),",")
 
 "Display tabs as >-- and display empty spaces
 set list!
