@@ -28,6 +28,9 @@ set foldmethod=manual
 " Use the OSX clipboard by default
 set clipboard=unnamed
 
+" enable project speficific vimrc
+set exrc
+
 "C language options
 let c_no_trail_space_error = 1
 let c_no_tab_space_error = 1
