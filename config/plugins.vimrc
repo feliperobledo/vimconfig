@@ -2,8 +2,8 @@ call plug#begin('~/.config/nvim/plugged')
 
 "Plug 'carlitux/deoplete-ternjs', { 'do': 'npm install -g tern' }
 Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-" Initialize plugin system
 
+" Initialize plugin system
 Plug 'zchee/deoplete-clang'
 Plug 'zchee/deoplete-jedi'
 
@@ -19,6 +19,10 @@ Plug 'tpope/vim-rhubarb'
 
 " Goto package for python
 Plug 'davidhalter/jedi-vim'
+Plug 'scrooloose/syntastic'
+
+" Autopep8 - format python code
+Plug 'tell-k/vim-autopep8'
 
 " Add color to every indentation level
 Plug 'nathanaelkane/vim-indent-guides'
@@ -33,11 +37,18 @@ Plug 'martinda/Jenkinsfile-vim-syntax'
 " Enable silver searcher in editor
 Plug 'Numkil/ag.nvim'
 
+" Mimic Control+Shift Find of a reference across a project, and edit all references in place
+Plug 'dyng/ctrlsf.vim'
+
+" Swap the contents of 2 panes while keeping the current layout
+Plug 'wesQ3/vim-windowswap'
+
 " Typescript extension
-Plug 'leafgarland/typescript-vim'
-Plug 'peitalin/vim-jsx-typescript'
-" This is promising but broken
-" Plug 'mhartington/nvim-typescript', {'do': './install.sh' }
+" Plug 'leafgarland/typescript-vim'
+" Plug 'peitalin/vim-jsx-typescript'
+Plug 'HerringtonDarkholme/yats.vim'
+Plug 'mhartington/nvim-typescript', {'do': 'sh install.sh' }
+Plug 'Shougo/denite.nvim'
 
 " Html and CSS autocompletion
 Plug 'mattn/emmet-vim'
@@ -48,11 +59,20 @@ Plug 'tpope/vim-obsession'
 " Ruby plugins
 Plug 'vim-ruby/vim-ruby'
 
+" Plugin to add editing features when working with cucumber files
+Plug 'tpope/vim-cucumber'
+
 call plug#end()
 
 " Enable deoplete
 let g:deoplete#enable_at_startup = 1
 let g:deoplete#auto_complete_start_length = 1
+
+" =========================================================
+"       syntastic
+" =========================================================
+let g:syntastic_python_flake8_args='--ignore=E501'
+let g:syntastic_auto_loc_list=1
 
 " =========================================================
 "       deoplete-jedi
@@ -67,6 +87,14 @@ let g:deoplete#sources#jedi#show_docstring = 0
 
 let g:deoplete#sources#jedi#debug_server = 0
 let g:deoplete#sources#jedi#extra_path = []
+
+" =========================================================
+"       vim-autopep8
+" =========================================================
+let g:autopep8_on_save = 1
+let g:autopep8_diff_type='horizontal'
+let g:autopep8_indent_size=4
+
 
 " =========================================================
 "       deoplete-clang
