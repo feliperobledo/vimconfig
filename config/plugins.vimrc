@@ -62,6 +62,9 @@ Plug 'vim-ruby/vim-ruby'
 " Plugin to add editing features when working with cucumber files
 Plug 'tpope/vim-cucumber'
 
+" Add color and syntax highlighting for Godot's Gscript
+Plug 'calviken/vim-gdscript3'
+
 call plug#end()
 
 " Enable deoplete
