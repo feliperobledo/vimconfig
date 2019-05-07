@@ -21,12 +21,12 @@ map <F3> :source vim_session <cr>     " And load session with F3
 "Enable fuzzy file search
 nnoremap <C-p> :FuzzyOpen<CR>
 
-
 " virtual tabstops using spaces
 let my_tab=4
 execute "set shiftwidth=".my_tab
 execute "set softtabstop=".my_tab
 set expandtab
+
 " allow toggling between local and default mode
 function! TabToggle()
   if &expandtab
@@ -40,3 +40,7 @@ function! TabToggle()
   endif
 endfunction
 nmap <F9> mz:execute TabToggle()<CR>'z
+
+" Move visual selection
+vnoremap J :m '>+1<cr>gv=gv
+vnoremap K :m '<-2<cr>gv=gv
