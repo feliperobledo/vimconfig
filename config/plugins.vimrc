@@ -90,6 +90,8 @@ let g:cpp_concepts_highlight = 1
 " =========================================================
 let g:syntastic_python_flake8_args='--ignore=E501'
 let g:syntastic_auto_loc_list=1
+let g:syntastic_cpp_compiler = 'clang++'
+let g:syntastic_cpp_compiler_options = ' -std=c++17 -stdlib=libc++'
 
 " =========================================================
 "       deoplete-jedi
