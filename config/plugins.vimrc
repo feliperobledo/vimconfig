@@ -113,6 +113,7 @@ let g:deoplete#sources#jedi#extra_path = []
 let g:autopep8_on_save = 1
 let g:autopep8_diff_type='horizontal'
 let g:autopep8_indent_size=4
+let g:autopep8_ignore="E501"
 
 
 " =========================================================
