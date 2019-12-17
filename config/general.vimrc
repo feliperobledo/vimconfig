@@ -1,6 +1,3 @@
-"Set the color scheme
-colorscheme slate
-
 "Don't wrap lines by default
 "set nowrap
 set textwidth=140

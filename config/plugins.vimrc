@@ -1,57 +1,54 @@
 call plug#begin('~/.config/nvim/plugged')
 
-"Plug 'carlitux/deoplete-ternjs', { 'do': 'npm install -g tern' }
-Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+
+" =================================================================================
+"                         Autocompletetion engine
+" =================================================================================
+" Plug 'carlitux/deoplete-ternjs', { 'do': 'npm install -g tern' }
+" Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 
 " Initialize plugin system
-Plug 'zchee/deoplete-clang'
-Plug 'zchee/deoplete-jedi'
+" Plug 'zchee/deoplete-clang'
+" Plug 'zchee/deoplete-jedi'
+"
+"" Use release branch
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
+" Or latest tag
+Plug 'neoclide/coc.nvim', {'tag': '*', 'branch': 'release'}
+" Or build from source code by use yarn: https://yarnpkg.com
+Plug 'neoclide/coc.nvim', {'do': 'yarn install --frozen-lockfile'}
 
-" Plugin to surround word under cursor with whatever
-Plug 'tpope/vim-surround'
-
-" Working with APEX. Syntax highlighting
-Plug 'ejholmes/vim-forcedotcom'
-
+" =================================================================================
+"                         Working with git
+" =================================================================================
 " Work with Git on Vim
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-rhubarb'
 
-" Goto package for python
-Plug 'davidhalter/jedi-vim'
-Plug 'scrooloose/syntastic'
+" =================================================================================
+"                         Editor Actions
+" =================================================================================
+"
+" Mimic Control+Shift Find of a reference across a project, and edit all references in place
+Plug 'dyng/ctrlsf.vim'
 
-" Autopep8 - format python code
-Plug 'tell-k/vim-autopep8'
-
-" Add color to every indentation level
-Plug 'nathanaelkane/vim-indent-guides'
+" Plugin to surround word under cursor with whatever
+Plug 'tpope/vim-surround'
 
 " Fuzzy file search
 " requires: brew install ripgrep the_silver_searcher
 Plug 'cloudhead/neovim-fuzzy'
 
-" Jenkins filesyntax
-Plug 'martinda/Jenkinsfile-vim-syntax'
+" Search for string in project
+Plug 'wsdjeg/FlyGrep.vim'
 
 " Enable silver searcher in editor
 Plug 'Numkil/ag.nvim'
 
-" Mimic Control+Shift Find of a reference across a project, and edit all references in place
-Plug 'dyng/ctrlsf.vim'
 
-" Swap the contents of 2 panes while keeping the current layout
-Plug 'wesQ3/vim-windowswap'
+" Add color to every indentation level
+Plug 'nathanaelkane/vim-indent-guides'
 
-" Typescript extension
-" Plug 'leafgarland/typescript-vim'
-" Plug 'peitalin/vim-jsx-typescript'
-Plug 'HerringtonDarkholme/yats.vim'
-Plug 'mhartington/nvim-typescript', {'do': 'sh install.sh' }
-Plug 'Shougo/denite.nvim'
-
-" Html and CSS autocompletion
-Plug 'mattn/emmet-vim'
 
 " Better interface to make sessions. Works well with tmux-resurrect
 Plug 'tpope/vim-obsession'
@@ -62,11 +59,27 @@ Plug 'vim-ruby/vim-ruby'
 " Plugin to add editing features when working with cucumber files
 Plug 'tpope/vim-cucumber'
 
+" =================================================================================
+"                         File syntax
+" =================================================================================
+
+" Typescript extension
+Plug 'HerringtonDarkholme/yats.vim'
+
+" Jenkins filesyntax
+Plug 'martinda/Jenkinsfile-vim-syntax'
+
 " Add color and syntax highlighting for Godot's Gscript
 Plug 'calviken/vim-gdscript3'
 
 " C++11/14/17 extra syntax highlighting
 Plug 'octol/vim-cpp-enhanced-highlight'
+
+" =================================================================================
+"                        Themes
+" =================================================================================
+
+Plug 'drewtempelmeyer/palenight.vim'
 
 call plug#end()
 
@@ -106,15 +119,6 @@ let g:deoplete#sources#jedi#show_docstring = 0
 
 let g:deoplete#sources#jedi#debug_server = 0
 let g:deoplete#sources#jedi#extra_path = []
-
-" =========================================================
-"       vim-autopep8
-" =========================================================
-let g:autopep8_on_save = 1
-let g:autopep8_diff_type='horizontal'
-let g:autopep8_indent_size=4
-let g:autopep8_ignore="E501"
-
 
 " =========================================================
 "       deoplete-clang
@@ -181,3 +185,10 @@ let g:indent_guides_guide_size = 1
 let g:indext_guides_color_change_percent = 1
 autocmd VimEnter,Colorscheme * :hi IndentGuidesOdd  ctermbg=22
 autocmd VimEnter,Colorscheme * :hi IndentGuidesEven ctermbg=136
+
+
+" =========================================================
+"       custom installed theme
+" =========================================================
+set background=dark
+colorscheme palenight
