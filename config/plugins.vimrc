@@ -13,10 +13,9 @@ call plug#begin('~/.config/nvim/plugged')
 "
 "" Use release branch
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
-" Or latest tag
-Plug 'neoclide/coc.nvim', {'tag': '*', 'branch': 'release'}
-" Or build from source code by use yarn: https://yarnpkg.com
-Plug 'neoclide/coc.nvim', {'do': 'yarn install --frozen-lockfile'}
+
+" Omnisharp (c#) completion
+Plug 'OmniSharp/omnisharp-vim'
 
 " =================================================================================
 "                         Working with git
@@ -186,6 +185,21 @@ let g:indext_guides_color_change_percent = 1
 autocmd VimEnter,Colorscheme * :hi IndentGuidesOdd  ctermbg=22
 autocmd VimEnter,Colorscheme * :hi IndentGuidesEven ctermbg=136
 
+" =========================================================
+"       Omnisharp completion
+" =========================================================
+let g:OmniSharp_server_stdio = 1
+let g:OmniSharp_server_use_mono = 1
+
+" Don't autoselect first omnicomplete option, show options even if there is only
+" one (so the preview documentation is accessible). Remove 'preview' if you
+" don't want to see any documentation whatsoever.
+set completeopt=longest,menuone,preview
+
+" =========================================================
+"       Conqueror of Completions (coc) settings
+" =========================================================
+let g:coc_global_extensions=[ ]
 
 " =========================================================
 "       custom installed theme

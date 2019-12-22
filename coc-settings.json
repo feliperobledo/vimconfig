@@ -23,6 +23,7 @@
        }
     }
   },
+
   "initializationOptions": {
     "cache": {
       "directory": "/tmp/ccls"
