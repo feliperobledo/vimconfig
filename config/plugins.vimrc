@@ -80,6 +80,12 @@ Plug 'octol/vim-cpp-enhanced-highlight'
 
 Plug 'drewtempelmeyer/palenight.vim'
 
+
+" =================================================================================
+"                        Documentation Helpers
+" =================================================================================
+Plug 'JamshedVesuna/vim-markdown-preview'
+
 call plug#end()
 
 " Enable deoplete
@@ -206,3 +212,18 @@ let g:coc_global_extensions=[ ]
 " =========================================================
 set background=dark
 colorscheme palenight
+
+" =========================================================
+"       markdown helper
+" =========================================================
+" this is the hotkey when viewing the docs
+let vim_markdown_preview_hotkey='<C-l>'
+
+" because I'm using grip to render markdown
+let vim_markdown_preview_github=1
+
+" enable rendering images on buffer write
+let vim_markdown_preview_toggle=2
+
+" set my default browser
+let vim_markdown_preview_browser='Google Chrome'

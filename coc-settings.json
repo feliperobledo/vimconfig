@@ -6,10 +6,11 @@
   "tslint.suppressWhileTypeErrorsPresent": false,
   "tslint.configFile": "./tslint.json",
 
+  "python.jediEnabled": true,
+  "python.linting.enabled": true,
   "python.linting.pylintEnabled": false,
   "python.linting.pep8Enabled": true,
-  "python.linting.enabled": true,
-  "python.jediEnabled": false,
+  "coc.preferences.jumpCommand": "tab drop",
 
   "languageserver": {
     "ccls": {
@@ -37,5 +38,7 @@
         "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/"
       ]
     }
-  }
+  },
+
+  "tsserver.trace.server": "verbose"
 }
