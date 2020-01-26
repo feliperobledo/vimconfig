@@ -1,3 +1,7 @@
+" enable default vim completion
+filetype plugin on
+set omnifunc=syntaxcomplete#Complete
+
 " Setting my leader
 let mapleader = ","
 let g:mapleader = ","
