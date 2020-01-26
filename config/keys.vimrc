@@ -1,3 +1,13 @@
+" Don't be a noob, join the no arrows key movement
+inoremap  <Up>     <NOP>
+inoremap  <Down>   <NOP>
+inoremap  <Left>   <NOP>
+inoremap  <Right>  <NOP>
+noremap   <Up>     <NOP>
+noremap   <Down>   <NOP>
+noremap   <Left>   <NOP>
+noremap   <Right>  <NOP>"
+
 "This keymap changes navigation between windows to only have to use 
 "Ctrl+h/j/k/l
 map <C-J> <C-W>j<C-W>_
@@ -9,11 +19,11 @@ map <C-H> <C-W>h<C-W>_
 set wmh=0
 
 "Tab navigation mappings
-nnoremap <F7>      :tabprevious<CR>
-nnoremap <F8>      :tabnext<CR>
+nnoremap <F8>      :tabprevious<CR>
+nnoremap <F9>      :tabnext<CR>
 nnoremap <C-t>     :tabnew<CR>
-inoremap <F7>      <Esc>:tabprevious<CR>i
-inoremap <F8>      <Esc>:tabnext<CR>i
+inoremap <F8>      <Esc>:tabprevious<CR>i
+inoremap <F9>      <Esc>:tabnext<CR>i
 inoremap <C-t>     <Esc>:tabnew<CR>i
 map <F2> :mksession! Session.vim <cr> " Quick write session with F2
 map <F3> :source Session.vim <cr>     " And load session with F3
@@ -40,7 +50,7 @@ function! TabToggle()
     set expandtab
   endif
 endfunction
-nmap <F9> mz:execute TabToggle()<CR>'z
+nmap <F10> mz:execute TabToggle()<CR>'z
 
 " Move visual selection
 vnoremap J :m '>+1<cr>gv=gv
