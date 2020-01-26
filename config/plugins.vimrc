@@ -86,6 +86,13 @@ Plug 'drewtempelmeyer/palenight.vim'
 " =================================================================================
 Plug 'JamshedVesuna/vim-markdown-preview'
 
+" PlanUML Syntax highlighting
+Plug 'aklt/plantuml-syntax'
+
+" PlanUML live previewer
+Plug 'tyru/open-browser.vim' " dependency of platuml-previewer
+Plug 'weirongxu/plantuml-previewer.vim'
+
 call plug#end()
 
 " Enable deoplete
