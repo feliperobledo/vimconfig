@@ -47,17 +47,14 @@ autocmd Filetype java setlocal ts=4 sts=4 sw=4 expandtab
 "HTML language options
 autocmd FileType html setlocal ts=4 sts=4 sw=4 expandtab
 
-"css language options
-autocmd FileType css setlocal ts=4 sts=4 sw=4 expandtab
-
 "typescript language options
 autocmd FileType typescript setlocal ts=4 sts=4 sw=4 expandtab
-autocmd BufNewFile,BufRead *.tsx,*.jsx set filetype=typescript.jsx
+autocmd BufNewFile,BufRead *.tsx,*.jsx setlocal filetype=typescript.jsx
 
 "json files options
 autocmd FileType json setlocal ts=2 sts=2 sw=2 expandtab
 
 "ruby file options
 autocmd FileType ruby setlocal ts=2 sts=2 sw=2 expandtab
-autocmd BufNewFile,BufRead *.feature   set syntax=ruby
+autocmd BufNewFile,BufRead *.feature setlocal syntax=ruby
 
