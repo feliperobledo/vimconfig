@@ -84,14 +84,14 @@ Plug 'drewtempelmeyer/palenight.vim'
 " =================================================================================
 "                        Documentation Helpers
 " =================================================================================
-Plug 'JamshedVesuna/vim-markdown-preview'
+" Plug 'JamshedVesuna/vim-markdown-preview'
 
 " PlanUML Syntax highlighting
 Plug 'aklt/plantuml-syntax'
 
 " PlanUML live previewer
-Plug 'tyru/open-browser.vim' " dependency of platuml-previewer
-Plug 'weirongxu/plantuml-previewer.vim'
+" Plug 'tyru/open-browser.vim' " dependency of platuml-previewer
+" Plug 'weirongxu/plantuml-previewer.vim'
 
 call plug#end()
 
@@ -212,7 +212,15 @@ set completeopt=longest,menuone,preview
 " =========================================================
 "       Conqueror of Completions (coc) settings
 " =========================================================
-let g:coc_global_extensions=[ ]
+let g:coc_global_extensions=[
+    \'coc-omnisharp',
+    \'coc-json',
+    \'coc-tsserver',
+    \'coc-tslint-plugin',
+    \'coc-python',
+    \'coc-pyls',
+    \'coc-css'
+\]
 
 " =========================================================
 "       custom installed theme
