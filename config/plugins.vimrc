@@ -4,13 +4,6 @@ call plug#begin('~/.config/nvim/plugged')
 " =================================================================================
 "                         Autocompletetion engine
 " =================================================================================
-" Plug 'carlitux/deoplete-ternjs', { 'do': 'npm install -g tern' }
-" Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-
-" Initialize plugin system
-" Plug 'zchee/deoplete-clang'
-" Plug 'zchee/deoplete-jedi'
-"
 "" Use release branch
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
@@ -44,10 +37,8 @@ Plug 'wsdjeg/FlyGrep.vim'
 " Enable silver searcher in editor
 Plug 'Numkil/ag.nvim'
 
-
 " Add color to every indentation level
 Plug 'nathanaelkane/vim-indent-guides'
-
 
 " Better interface to make sessions. Works well with tmux-resurrect
 Plug 'tpope/vim-obsession'
@@ -77,9 +68,7 @@ Plug 'octol/vim-cpp-enhanced-highlight'
 " =================================================================================
 "                        Themes
 " =================================================================================
-
 Plug 'drewtempelmeyer/palenight.vim'
-
 
 " =================================================================================
 "                        Documentation Helpers
@@ -139,53 +128,6 @@ let g:deoplete#sources#clang#libclang_path = '/usr/local/Cellar/llvm/7.0.1/lib/l
 let g:deoplete#sources#clang#clang_header = '/usr/local/Cellar/llvm/7.0.1/include/clang'
 let g:deoplete#sources#clang#std = { 'cpp': 'c++17','c': 'c11', 'objc': 'c11', 'objcpp': 'c++1z' }
 let g:deoplete#sources#clang#sort_algo = 'priority'
-
-" =========================================================
-"       ternjs
-" =========================================================
-
-" Set bin if you have many instalations
-let g:deoplete#sources#ternjs#tern_bin = '/usr/local/bin/tern'
-let g:deoplete#sources#ternjs#timeout = 1
-
-" Whether to include the types of the completions in the result data. Default: 0
-let g:deoplete#sources#ternjs#types = 1
-
-" Whether to include the distance (in scopes for variables, in prototypes for 
-" properties) between the completions and the origin position in the result 
-" data. Default: 0
-let g:deoplete#sources#ternjs#depths = 1
-
-" Whether to include documentation strings (if found) in the result data.
-" Default: 0
-let g:deoplete#sources#ternjs#docs = 1
-
-" When on, only completions that match the current word at the given point will
-" be returned. Turn this off to get all results, so that you can filter on the 
-" client side. Default: 1
-let g:deoplete#sources#ternjs#filter = 0
-
-" Whether to use a case-insensitive compare between the current word and 
-" potential completions. Default 0
-let g:deoplete#sources#ternjs#case_insensitive = 1
-
-" Determines whether the result set will be sorted. Default: 1
-let g:deoplete#sources#ternjs#sort = 0
-
-" If completions should be returned when inside a literal. Default: 1
-let g:deoplete#sources#ternjs#in_literal = 0
-
-"Add extra filetypes
-let g:deoplete#sources#ternjs#filetypes = [
-                \ 'jsx',
-                \ 'javascript.jsx',
-                \ 'vue',
-                \ '...'
-                \ ]
-
-" Use tern_for_vim.
-let g:tern#command = ["tern"]
-let g:tern#arguments = ["--persistent"]
 
 " =========================================================
 "       vim-indent-guidelines
