@@ -7,9 +7,17 @@ call plug#begin('~/.config/nvim/plugged')
 "" Use release branch
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
+
+" =================================================================================
+"                         C# engine
+" =================================================================================
+" coc doesn't support C# very well, yet. Until then, we need these configs.
+
 " Omnisharp (c#) completion
 Plug 'OmniSharp/omnisharp-vim'
 
+" Syntax highlighting
+Plug 'w0rp/ale'
 " =================================================================================
 "                         Working with git
 " =================================================================================
@@ -53,17 +61,8 @@ Plug 'tpope/vim-cucumber'
 "                         File syntax
 " =================================================================================
 
-" Typescript extension
-Plug 'HerringtonDarkholme/yats.vim'
-
-" Jenkins filesyntax
-Plug 'martinda/Jenkinsfile-vim-syntax'
-
-" Add color and syntax highlighting for Godot's Gscript
-Plug 'calviken/vim-gdscript3'
-
-" C++11/14/17 extra syntax highlighting
-Plug 'octol/vim-cpp-enhanced-highlight'
+" The only file syntax highlighter you will need
+Plug 'sheerun/vim-polyglot'
 
 " =================================================================================
 "                        Themes
@@ -75,12 +74,9 @@ Plug 'drewtempelmeyer/palenight.vim'
 " =================================================================================
 " Plug 'JamshedVesuna/vim-markdown-preview'
 
-" PlanUML Syntax highlighting
-Plug 'aklt/plantuml-syntax'
-
 " PlanUML live previewer
-" Plug 'tyru/open-browser.vim' " dependency of platuml-previewer
-" Plug 'weirongxu/plantuml-previewer.vim'
+Plug 'tyru/open-browser.vim' " dependency of platuml-previewer
+Plug 'weirongxu/plantuml-previewer.vim'
 
 call plug#end()
 
@@ -98,14 +94,6 @@ let g:cpp_experimental_simple_template_highlight = 1 "works in most cases, but c
 " let g:cpp_experimental_template_highlight = 1 "is a faster implementation but has some corner cases where it doesn't work
 let g:cpp_concepts_highlight = 1
 " let c_no_curly_error=1 " vim tends to flag braces as error. This disables that.
-
-" =========================================================
-"       syntastic
-" =========================================================
-let g:syntastic_python_flake8_args='--ignore=E501'
-let g:syntastic_auto_loc_list=1
-let g:syntastic_cpp_compiler = 'clang++'
-let g:syntastic_cpp_compiler_options = ' -std=c++17 -stdlib=libc++'
 
 " =========================================================
 "       deoplete-jedi
@@ -151,18 +139,22 @@ let g:OmniSharp_server_use_mono = 1
 " don't want to see any documentation whatsoever.
 set completeopt=longest,menuone,preview
 
+" Tell ALE to use OmniSharp for linting C# files, and no other linters.
+let g:ale_linters = { 'cs': ['OmniSharp'] }
+
 " =========================================================
 "       Conqueror of Completions (coc) settings
 " =========================================================
 let g:coc_global_extensions=[
-    \'coc-omnisharp',
     \'coc-json',
+    \'coc-utils',
     \'coc-tsserver',
     \'coc-tslint-plugin',
     \'coc-python',
     \'coc-pyls',
     \'coc-java',
-    \'coc-css'
+    \'coc-css',
+    \'coc-snippets'
 \]
 
 " =========================================================
@@ -185,3 +177,21 @@ let vim_markdown_preview_toggle=2
 
 " set my default browser
 let vim_markdown_preview_browser='Google Chrome'
+
+" =========================================================
+"       coc snippets
+" =========================================================
+" Use <C-l> for trigger snippet expand.
+imap <C-l> <Plug>(coc-snippets-expand)
+
+" Use <C-j> for select text for visual placeholder of snippet.
+vmap <C-j> <Plug>(coc-snippets-select)
+
+" Use <C-j> for jump to next placeholder, it's default of coc.nvim
+let g:coc_snippet_next = '<c-j>'
+
+" Use <C-k> for jump to previous placeholder, it's default of coc.nvim
+let g:coc_snippet_prev = '<c-k>'
+
+" Use <C-j> for both expand and jump (make expand higher priority.)
+imap <C-j> <Plug>(coc-snippets-expand-jump)
