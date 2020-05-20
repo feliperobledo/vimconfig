@@ -28,9 +28,5 @@ nnoremap <buffer> <Leader>dc :OmniSharpDocumentation<CR>
 nnoremap <buffer> <C-\> :OmniSharpSignatureHelp<CR>
 inoremap <buffer> <C-\> <C-o>:OmniSharpSignatureHelp<CR>
 
-" Navigate up and down by method/property/field
-nnoremap <buffer> <C-k> :OmniSharpNavigateUp<CR>
-nnoremap <buffer> <C-j> :OmniSharpNavigateDown<CR>
-
 " Find all code errors/warnings for the current solution and populate the quickfix window
 nnoremap <buffer> <Leader>cc :OmniSharpGlobalCodeCheck<CR>
