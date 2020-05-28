@@ -2,9 +2,11 @@
   "tsserver.npm": "/Users/feliperobledo/.nvm/versions/node/v10.10.0/bin/npm",
   "typescript.suggest.autoImports": true,
 
-  "tslint.autoFixOnSave": true,
-  "tslint.suppressWhileTypeErrorsPresent": false,
-  "tslint.configFile": "./tslint.json",
+  "eslint.run": "onSave",
+  "eslint.autoFixOnSave": true,
+  "eslint.options": {
+    "configFile": ".eslintrc.js"
+  },
 
   "python.jediEnabled": true,
   "python.linting.enabled": true,

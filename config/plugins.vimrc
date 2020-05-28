@@ -149,7 +149,7 @@ let g:coc_global_extensions=[
     \'coc-json',
     \'coc-utils',
     \'coc-tsserver',
-    \'coc-tslint-plugin',
+    \'coc-eslint',
     \'coc-python',
     \'coc-pyls',
     \'coc-java',
