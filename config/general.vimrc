@@ -41,9 +41,6 @@ autocmd Filetype javascript setlocal ts=4 sts=4 sw=4 expandtab
 "C++ language options
 autocmd Filetype cpp setlocal ts=4 sts=4 sw=4 expandtab
 
-"Java language options
-autocmd Filetype java setlocal ts=4 sts=4 sw=4 expandtab
-
 "HTML language options
 autocmd FileType html setlocal ts=4 sts=4 sw=4 expandtab
 
@@ -57,4 +54,3 @@ autocmd FileType json setlocal ts=2 sts=2 sw=2 expandtab
 "ruby file options
 autocmd FileType ruby setlocal ts=2 sts=2 sw=2 expandtab
 autocmd BufNewFile,BufRead *.feature setlocal syntax=ruby
-
