@@ -154,7 +154,8 @@ let g:coc_global_extensions=[
     \'coc-pyls',
     \'coc-java',
     \'coc-css',
-    \'coc-snippets'
+    \'coc-snippets',
+    \'coc-prettier',
 \]
 
 " =========================================================
