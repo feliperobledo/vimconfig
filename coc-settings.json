@@ -2,8 +2,10 @@
   "tsserver.npm": "/Users/feliperobledo/.nvm/versions/node/v10.10.0/bin/npm",
   "typescript.suggest.autoImports": true,
 
+  "eslint.enabled": true,
   "eslint.run": "onSave",
   "eslint.autoFixOnSave": true,
+  "eslint.quit": true,
   "eslint.options": {
     "configFile": ".eslintrc.js"
   },
@@ -18,9 +20,7 @@
     "css",
     "markdown",
     "typescript",
-    "typescriptreact",
-    "javascript",
-    "javascriptreact"
+    "typescriptreact"
   ],
 
   "languageserver": {

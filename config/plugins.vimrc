@@ -18,6 +18,7 @@ Plug 'OmniSharp/omnisharp-vim'
 
 " Syntax highlighting
 Plug 'w0rp/ale'
+
 " =================================================================================
 "                         Working with git
 " =================================================================================
@@ -54,15 +55,15 @@ Plug 'tpope/vim-obsession'
 " Ruby plugins
 Plug 'vim-ruby/vim-ruby'
 
-" Plugin to add editing features when working with cucumber files
-Plug 'tpope/vim-cucumber'
-
 " =================================================================================
 "                         File syntax
 " =================================================================================
 
 " The only file syntax highlighter you will need
 Plug 'sheerun/vim-polyglot'
+
+" For C# development
+Plug 'tomasiser/vim-code-dark'
 
 " =================================================================================
 "                        Themes
@@ -75,8 +76,8 @@ Plug 'drewtempelmeyer/palenight.vim'
 " Plug 'JamshedVesuna/vim-markdown-preview'
 
 " PlanUML live previewer
-Plug 'tyru/open-browser.vim' " dependency of platuml-previewer
-Plug 'weirongxu/plantuml-previewer.vim'
+" Plug 'tyru/open-browser.vim' " dependency of platuml-previewer
+" Plug 'weirongxu/plantuml-previewer.vim'
 
 call plug#end()
 
@@ -141,13 +142,14 @@ set completeopt=longest,menuone,preview
 
 " Tell ALE to use OmniSharp for linting C# files, and no other linters.
 let g:ale_linters = { 'cs': ['OmniSharp'] }
+" Only run linters named in ale_linters settings.
+let g:ale_linters_explicit = 1
 
 " =========================================================
 "       Conqueror of Completions (coc) settings
 " =========================================================
 let g:coc_global_extensions=[
     \'coc-json',
-    \'coc-utils',
     \'coc-tsserver',
     \'coc-eslint',
     \'coc-python',
@@ -159,6 +161,7 @@ let g:coc_global_extensions=[
 \]
 
 
+
 " =========================================================
 "       coc-snippets
 " =========================================================
@@ -167,7 +170,6 @@ imap <leader>tt <Plug>(coc-snippets-expand)
 
 " Use <C-j> for select text for visual placeholder of snippet.
 vmap <leader>gg <Plug>(coc-snippets-select)
-
 
 " Make <tab> used for trigger completion, completion confirm, snippet expand and jump like VSCode.
 inoremap <silent><expr> <TAB>
