@@ -30,3 +30,5 @@ inoremap <buffer> <C-\> <C-o>:OmniSharpSignatureHelp<CR>
 
 " Find all code errors/warnings for the current solution and populate the quickfix window
 nnoremap <buffer> <Leader>cc :OmniSharpGlobalCodeCheck<CR>
+
+colorscheme codedark
