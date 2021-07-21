@@ -27,6 +27,11 @@ Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-rhubarb'
 
 " =================================================================================
+"                         C++ engine
+" =================================================================================
+Plug 'rhysd/vim-clang-format', {'for' : ['c', 'cpp']}
+
+" =================================================================================
 "                         Editor Actions
 " =================================================================================
 "
@@ -169,16 +174,14 @@ let g:coc_global_extensions=[
     \'coc-prettier',
 \]
 
-
-
 " =========================================================
 "       coc-snippets
 " =========================================================
 " Use <C-l> for trigger snippet expand.
-imap <leader>tt <Plug>(coc-snippets-expand)
+imap <leader>ll <Plug>(coc-snippets-expand)
 
 " Use <C-j> for select text for visual placeholder of snippet.
-vmap <leader>gg <Plug>(coc-snippets-select)
+vmap <leader>jj <Plug>(coc-snippets-select)
 
 " Make <tab> used for trigger completion, completion confirm, snippet expand and jump like VSCode.
 inoremap <silent><expr> <TAB>
@@ -193,6 +196,7 @@ function! s:check_back_space() abort
 endfunction
 
 let g:coc_snippet_next = '<tab>'
+
 
 " =========================================================
 "       custom installed theme
