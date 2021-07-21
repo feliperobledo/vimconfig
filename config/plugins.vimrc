@@ -36,10 +36,6 @@ Plug 'dyng/ctrlsf.vim'
 " Plugin to surround word under cursor with whatever
 Plug 'tpope/vim-surround'
 
-" Fuzzy file search
-" requires: brew install ripgrep the_silver_searcher
-Plug 'cloudhead/neovim-fuzzy'
-
 " Search for string in project
 Plug 'wsdjeg/FlyGrep.vim'
 
@@ -54,6 +50,19 @@ Plug 'tpope/vim-obsession'
 
 " Ruby plugins
 Plug 'vim-ruby/vim-ruby'
+
+if has('nvim-0.5')
+" telescope previewer for neovim 0.5
+Plug 'nvim-lua/popup.nvim'
+Plug 'nvim-lua/plenary.nvim'
+Plug 'nvim-telescope/telescope.nvim'
+else
+
+" Fuzzy file search
+" requires: brew install ripgrep the_silver_searcher
+Plug 'cloudhead/neovim-fuzzy'
+
+endif
 
 " =================================================================================
 "                         File syntax

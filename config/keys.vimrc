@@ -29,8 +29,16 @@ map <F2> :mksession! Session.vim <cr> " Quick write session with F2
 map <F3> :source Session.vim <cr>     " And load session with F3
 
 "Enable fuzzy file search
-nnoremap <C-p> :FuzzyOpen<CR>
-nnoremap <C-s> :FlyGrep<CR>
+if has('nvim-0.5')
+    nnoremap <leader>ff <cmd>Telescope find_files<cr>
+    nnoremap <leader>fg <cmd>Telescope live_grep<cr>
+    nnoremap <leader>fb <cmd>Telescope buffers<cr>
+    nnoremap <leader>fh <cmd>Telescope help_tags<cr>
+    nnoremap <leader>ft <cmd>Telescope git_files<cr>
+else
+    nnoremap <C-p> :FuzzyOpen<CR>
+    nnoremap <C-s> :FlyGrep<CR>
+endif
 
 " virtual tabstops using spaces
 let my_tab=4
