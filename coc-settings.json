@@ -1,6 +1,10 @@
 {
-  "tsserver.npm": "/Users/feliperobledo/.nvm/versions/node/v10.10.0/bin/npm",
+  "tsserver.npm": "/Users/feliperobledo/.nvm/versions/node/v12.13.0/bin/npm",
+  "tsserver.log": "verbose",
+  "tsserver.trace.server": "verbose",
   "typescript.suggest.autoImports": true,
+  "tsserver.maxTsServerMemory": 4096,
+  "diagnostic.checkCurrentLine": true,
 
   "eslint.enabled": true,
   "eslint.run": "onSave",
