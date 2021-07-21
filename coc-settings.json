@@ -55,5 +55,6 @@
     }
   },
 
-  "tsserver.trace.server": "verbose"
+
+  "java.format.enabled": false
 }
