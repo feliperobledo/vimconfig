@@ -31,6 +31,16 @@ Plug 'tpope/vim-rhubarb'
 " =================================================================================
 Plug 'rhysd/vim-clang-format', {'for' : ['c', 'cpp']}
 
+
+" =================================================================================
+"                         Debugging Tools
+" =================================================================================
+" TODO: look into dap configuration
+" Plug 'mfussenegger/nvim-dap'
+
+" C++ debugging
+Plug 'sakhnik/nvim-gdb', { 'do': ':!./install.sh' }
+
 " =================================================================================
 "                         Editor Actions
 " =================================================================================
@@ -236,3 +246,26 @@ let g:coc_snippet_prev = '<c-k>'
 
 " Use <C-j> for both expand and jump (make expand higher priority.)
 imap <C-j> <Plug>(coc-snippets-expand-jump)
+
+" =========================================================
+"       nvim-gdb config
+" =========================================================
+
+" Disable the gdb debugger by default. If the project wants to use it, they will set it back
+let g:loaded_nvimgdb = 1
+
+" We're going to define single-letter keymaps, so don't try to define them
+" in the terminal window.  The debugger CLI should continue accepting text commands.
+function! NvimGdbNoTKeymaps()
+  tnoremap <silent> <buffer> <esc> <c-\><c-n>
+endfunction
+
+let g:nvimgdb_config_override = {
+  \ 'key_next': 'n',
+  \ 'key_step': 's',
+  \ 'key_finish': 'f',
+  \ 'key_continue': 'c',
+  \ 'key_until': 'u',
+  \ 'key_breakpoint': 'b',
+  \ 'set_tkeymaps': "NvimGdbNoTKeymaps",
+  \ }

@@ -30,6 +30,12 @@ set clipboard=unnamed
 
 " enable project speficific vimrc
 set exrc
+"set secure
+
+
+"=============================================================================-
+"                           Language Options
+"==============================================================================
 
 "C language options
 let c_no_trail_space_error = 1
