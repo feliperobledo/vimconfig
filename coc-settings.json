@@ -2,8 +2,13 @@
   "tsserver.npm": "/Users/feliperobledo/.nvm/versions/node/v12.13.0/bin/npm",
   "tsserver.log": "verbose",
   "tsserver.trace.server": "verbose",
-  "typescript.suggest.autoImports": true,
   "tsserver.maxTsServerMemory": 4096,
+  "typescript.showUnused" : true,
+  "typescript.autoClosingTags": true,
+
+
+  "typescript.suggest.autoImports": true,
+
   "diagnostic.checkCurrentLine": true,
 
   "eslint.enabled": true,
@@ -18,8 +23,8 @@
   "python.linting.enabled": true,
   "python.linting.pylintEnabled": false,
   "python.linting.pep8Enabled": true,
-  "coc.preferences.jumpCommand": "tab drop",
 
+  "coc.preferences.jumpCommand": "tab drop",
   "coc.preferences.formatOnSaveFiletypes": [
     "css",
     "markdown",
@@ -56,5 +61,5 @@
     }
   },
 
-  "java.format.enabled": false
+  "java.format.enabled": false,
 }
