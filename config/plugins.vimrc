@@ -102,6 +102,15 @@ Plug 'drewtempelmeyer/palenight.vim'
 " PlanUML live previewer
 " Plug 'tyru/open-browser.vim' " dependency of platuml-previewer
 " Plug 'weirongxu/plantuml-previewer.vim'
+"
+" =================================================================================
+"                        Look n' Feel
+" =================================================================================
+" Add a status line. Helps with keeping track of git branch and others. Super useful
+" when working with git worktrees.
+Plug 'hoob3rt/lualine.nvim'
+" If you want to have icons in your statusline choose one of these
+" Plug 'kyazdani42/nvim-web-devicons'
 
 call plug#end()
 
@@ -252,7 +261,7 @@ imap <C-j> <Plug>(coc-snippets-expand-jump)
 " =========================================================
 
 " Disable the gdb debugger by default. If the project wants to use it, they will set it back
-let g:loaded_nvimgdb = 1
+" let g:loaded_nvimgdb = 1
 
 " We're going to define single-letter keymaps, so don't try to define them
 " in the terminal window.  The debugger CLI should continue accepting text commands.
