@@ -3,3 +3,6 @@ plugged/
 
 # do not commit network history file
 .netrwhist
+
+# vim session
+Session.vim
