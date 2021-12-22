@@ -62,4 +62,5 @@
   },
 
   "java.format.enabled": false,
+  "highlight.disableLanguages" : ["c", "c++"],
 }

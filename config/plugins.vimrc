@@ -1,3 +1,9 @@
+" =========================================================
+"       vim-polyglot
+" =========================================================
+" needs to be declared before polyglot is loaded
+let g:polyglot_disabled = ['typescript']
+
 call plug#begin('~/.config/nvim/plugged')
 
 
@@ -188,10 +194,16 @@ let g:coc_global_extensions=[
     \'coc-python',
     \'coc-pyls',
     \'coc-java',
+    \'coc-java-debug',
     \'coc-css',
     \'coc-snippets',
     \'coc-prettier',
+    \'coc-highlight',
 \]
+
+" =========================================================
+"       coc-highlighting
+" =========================================================
 
 " =========================================================
 "       coc-snippets
