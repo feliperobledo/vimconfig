@@ -47,6 +47,9 @@ Plug 'rhysd/vim-clang-format', {'for' : ['c', 'cpp']}
 " C++ debugging
 Plug 'sakhnik/nvim-gdb', { 'do': ':!./install.sh' }
 
+" Debugger used by coc-java-debug
+Plug 'puremourning/vimspector'
+
 " =================================================================================
 "                         Editor Actions
 " =================================================================================
@@ -120,10 +123,6 @@ Plug 'hoob3rt/lualine.nvim'
 
 call plug#end()
 
-" Enable deoplete
-let g:deoplete#enable_at_startup = 1
-let g:deoplete#auto_complete_start_length = 1
-
 " =========================================================
 "       vim-cpp-enhanced-highlight
 " =========================================================
@@ -134,28 +133,6 @@ let g:cpp_experimental_simple_template_highlight = 1 "works in most cases, but c
 " let g:cpp_experimental_template_highlight = 1 "is a faster implementation but has some corner cases where it doesn't work
 let g:cpp_concepts_highlight = 1
 " let c_no_curly_error=1 " vim tends to flag braces as error. This disables that.
-
-" =========================================================
-"       deoplete-jedi
-" =========================================================
-
-let g:deoplete#sources#jedi#server_timeout = 10
-let g:deoplete#sources#jedi#statement_length = 50
-let g:deoplete#sources#jedi#enable_cache = 1
-let g:deoplete#sources#jedi#show_docstring = 0
-" Use the following only if the VIRTUAL_ENV environment variable will not be set. Better to set it in on a per session basis.
-" let g:deoplete#sources#jedi#python_path - ''
-
-let g:deoplete#sources#jedi#debug_server = 0
-let g:deoplete#sources#jedi#extra_path = []
-
-" =========================================================
-"       deoplete-clang
-" =========================================================
-let g:deoplete#sources#clang#libclang_path = '/usr/local/Cellar/llvm/7.0.1/lib/libclang.dylib'
-let g:deoplete#sources#clang#clang_header = '/usr/local/Cellar/llvm/7.0.1/include/clang'
-let g:deoplete#sources#clang#std = { 'cpp': 'c++17','c': 'c11', 'objc': 'c11', 'objcpp': 'c++1z' }
-let g:deoplete#sources#clang#sort_algo = 'priority'
 
 " =========================================================
 "       vim-indent-guidelines
