@@ -29,7 +29,9 @@
     "css",
     "markdown",
     "typescript",
-    "typescriptreact"
+    "typescriptreact",
+    "javascript",
+    "javascriptreact",
   ],
 
   "languageserver": {
@@ -58,6 +60,12 @@
                 ]
             }
         }
+    },
+    "marko": {
+        "command": "/Users/frobledosalcedo/.nvm/versions/node/v14.18.1/lib/node_modules/@marko/language-server/dist/bin.js",
+        "args": ["--node-ipc"],
+        "filetypes": ["marko"],
+        "trace.server": "verbose"
     }
   },
 

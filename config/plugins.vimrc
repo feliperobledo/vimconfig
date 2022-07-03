@@ -2,7 +2,7 @@
 "       vim-polyglot
 " =========================================================
 " needs to be declared before polyglot is loaded
-let g:polyglot_disabled = ['typescript']
+"let g:polyglot_disabled = ['typescript']
 
 call plug#begin('~/.config/nvim/plugged')
 
