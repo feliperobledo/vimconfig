@@ -95,6 +95,8 @@ endif
 " The only file syntax highlighter you will need
 Plug 'sheerun/vim-polyglot'
 
+Plug 'uiiaoo/java-syntax.vim'
+
 " For C# development
 Plug 'tomasiser/vim-code-dark'
 
