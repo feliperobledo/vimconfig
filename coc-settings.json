@@ -13,10 +13,10 @@
 
   "eslint.enabled": true,
   "eslint.run": "onSave",
-  "eslint.autoFixOnSave": true,
+  "eslint.autoFixOnSave": false,
   "eslint.quit": true,
   "eslint.options": {
-    "configFile": ".eslintrc.js"
+    "overrideConfigFile": ".eslintrc.js",
   },
 
   "python.jediEnabled": true,

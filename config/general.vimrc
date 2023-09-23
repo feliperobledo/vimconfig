@@ -32,10 +32,16 @@ set clipboard=unnamed
 set exrc
 "set secure
 
+" ensure cursor always stays at screen middle
+set so=999
+
 
 "=============================================================================-
 "                           Language Options
 "==============================================================================
+
+" Do not select the first thing COC suggests
+let coc_config_suggest_noselect = 1
 
 "C language options
 let c_no_trail_space_error = 1
