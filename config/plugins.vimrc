@@ -188,6 +188,7 @@ let g:coc_global_extensions=[
     \'coc-highlight',
     \'coc-lua',
     \'coc-rust-analyzer',
+    \'coc-sql'
 \]
 
 " =========================================================
