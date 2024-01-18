@@ -62,4 +62,5 @@
   },
 
   "java.format.enabled": false,
+  "snippets.ultisnips.pythonPrompt": false,
 }
