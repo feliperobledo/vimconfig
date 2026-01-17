@@ -5,4 +5,6 @@ source $HOME/.config/nvim/config/telescope.vimrc
 "source $HOME/.config/nvim/config/lualine.vimrc
 source $HOME/.config/nvim/config/keys.vimrc
 source $HOME/.config/nvim/config/line.vimrc
+" this still doesn't work
+" source $HOME/.config/nvim/config/graphql.lua
 

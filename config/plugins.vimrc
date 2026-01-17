@@ -191,16 +191,18 @@ let g:coc_global_extensions=[
     \'coc-eslint',
     \'coc-python',
     \'coc-pyls',
-    \'coc-java',
-    \'coc-java-debug',
     \'coc-css',
-    \'coc-snippets',
-    \'coc-prettier',
     \'coc-highlight',
     \'coc-lua',
     \'coc-rust-analyzer',
     \'coc-sql'
 \]
+
+" Disabled Coc Extensions
+" coc-java
+" coc-java-debug
+" coc-snippets
+" coc-prettier
 
 " =========================================================
 "       coc-highlighting
