@@ -1,3 +1,7 @@
+--[[
+Configures Telescope for fuzzy finding files, live grep, and LSP pickers.
+Central to the modernization effort as it will replace older search plugins and tie into LSP sources.
+]]
 return {
   "nvim-telescope/telescope.nvim",
   config = function()

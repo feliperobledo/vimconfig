@@ -1,3 +1,7 @@
+--[[
+Legacy OmniSharp Vim client that currently powers C# language features.
+Will be removed after the native LSP stack wires up omnisharp-roslyn through mason-lspconfig.
+]]
 return {
   "OmniSharp/omnisharp-vim",
   config = function()

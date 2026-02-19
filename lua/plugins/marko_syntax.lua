@@ -1,3 +1,7 @@
+--[[
+Provides Marko/GraphQL syntax support and toggles advanced C++ highlighting globals.
+Was ported from the old Vimscript setup and keeps those language tweaks alive during the migration.
+]]
 return {
   "Epitrochoid/marko-vim-syntax",
   config = function()

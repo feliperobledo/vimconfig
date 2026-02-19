@@ -1,3 +1,7 @@
+--[[
+Sets up Vim Indent Guides so indentation levels are highlighted even without LSP context.
+Includes highlight autocommands and globals that we ported from the original Vimscript config.
+]]
 return {
   "nathanaelkane/vim-indent-guides",
   config = function()

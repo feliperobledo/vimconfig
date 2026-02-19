@@ -1,3 +1,7 @@
+--[[
+Legacy CoC configuration that powers completion, diagnostics, and code actions across most languages today.
+Kept in place until the native LSP + nvim-cmp stack can replace these features and the listed extensions.
+]]
 return {
   "neoclide/coc.nvim",
   branch = "release",
