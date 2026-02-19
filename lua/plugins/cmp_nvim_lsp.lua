@@ -4,4 +4,5 @@ Also exposes helper capabilities we pass into lspconfig so servers know completi
 ]]
 return {
   "hrsh7th/cmp-nvim-lsp",
+  opts = {}
 }

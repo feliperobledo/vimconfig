@@ -21,26 +21,28 @@ Roadmap for migrating this configuration to a fully Neovim-native stack built on
 
 ## Phase 2 — Plugin Inventory Update
 
-- [ ] Add specs for the Neovim-native stack:
-  - [ ] `neovim/nvim-lspconfig`
-  - [ ] `williamboman/mason.nvim`
-  - [ ] `williamboman/mason-lspconfig`
-  - [ ] `hrsh7th/nvim-cmp` plus desired sources (`cmp-nvim-lsp`, `cmp-buffer`, `cmp-path`, `cmp-cmdline`, etc.)
-  - [ ] Optional helpers (`folke/neodev.nvim`, `folke/trouble.nvim`, `j-hui/fidget.nvim`)
-- [ ] Mark legacy tooling for removal (`neoclide/coc.nvim`, `dense-analysis/ale`, `OmniSharp/omnisharp-vim`) and decide if any niche features need replacements.
+- [x] Add specs for the Neovim-native stack:
+  - [x] `neovim/nvim-lspconfig` (`lua/plugins/nvim_lspconfig.lua`)
+  - [x] `williamboman/mason.nvim` (`lua/plugins/mason.lua`)
+  - [ ] `williamboman/mason-lspconfig.nvim` — intentionally skipped in favor of direct Mason registry installs.
+  - [x] `hrsh7th/nvim-cmp` plus sources (`lua/plugins/nvim_cmp.lua`, `cmp_nvim_lsp.lua`, `cmp_buffer.lua`, `cmp_path.lua`, `cmp_cmdline.lua`, `cmp_luasnip.lua`)
+  - [x] Snippet tooling (`lua/plugins/luasnip.lua`, `friendly_snippets.lua`)
+  - [x] Optional helpers (`lua/plugins/neodev.lua`, `fidget.lua`, `trouble.lua`, `web_devicons.lua`)
+- [x] Mark legacy tooling for removal (`neoclide/coc.nvim`, `dense-analysis/ale`, `OmniSharp/omnisharp-vim`) and decide if any niche features need replacements.
+  - Legacy specs remain in `lua/plugins/coc.lua`, `ale.lua`, `omnisharp.lua` and will be deleted during Phase 7 after native replacements are verified.
 
 ## Phase 3 — Mason & LSP Bootstrap
 
-- [ ] Create `lua/config/lsp/init.lua` (or similar) to own all LSP setup.
-- [ ] Initialize Mason (`require("mason").setup()`), enabling UI preferences (border, icons). Do this initialization directly in the spec
-      table for the plugin.
-- [ ] Configure `mason-lspconfig` with an `ensure_installed` list covering all required languages. Required languages are Python, C#,
-      JavaScript/TypeScript, Ruby, GraphQL, and any others currently supported by CoC/ALE.
-- [ ] Define a shared `on_attach` function for keymaps and buffer-local settings.
-- [ ] Generate capabilities via `require("cmp_nvim_lsp").default_capabilities()` for later use in server setups.
+- [x] Create `lua/config/lsp/init.lua` to own shared LSP utilities (`on_attach`, capabilities).
+- [x] Initialize Mason in its plugin spec, enabling UI preferences and auto-install hooks via the registry.
+- [x] Use the Mason registry to ensure required language servers are installed (Python, C#, JavaScript/TypeScript, Ruby, GraphQL, JSON, CSS, Rust, SQL).
+- [x] Define a shared `on_attach` function for keymaps and buffer-local settings.
+- [x] Generate capabilities via `require("cmp_nvim_lsp").default_capabilities()` for later use in server setups.
+- [ ] After the Mason/LSP bootstrap is in place, run `:Lazy sync` to download the new tooling bundle.
 
 ## Phase 4 — Server Registration
 
+- [ ] Plan server-specific settings so we can safely delete `coc.nvim`, `ale`, and `omnisharp-vim` during Phase 7 without losing features.
 - [ ] For each language, register servers through `lspconfig.<server>.setup` with the shared `on_attach` and capabilities.
 - [ ] Migrate OmniSharp-specific options (e.g., `use_mono`) into the new server definition or Mason config.
 - [ ] Port ALE lint/format behavior either to native LSP settings or to external tools (consider `nvim-lint` or `null-ls` if needed).
