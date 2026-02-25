@@ -14,33 +14,37 @@ return {
           package_uninstalled = "✗",
         },
       },
-  },
-  config = function(_, opts)
-      require("mason").setup(opts)
-      local mr = require "mason-registry"
+      ensure_installed = {
+        -- Python
+        "pyright",
+        "black",
 
-      mr.refresh(function()
-        for _, tool in ipairs {
-          "pyright",
-          "solargraph",
-          "omnisharp",
-          "sqlls",
+        -- Ruby
+        "solargraph",
 
-          -- HTML
-          "html-lsp",
-          "htmlbeautifier",
-          "htmlhint",
+        -- C#
+        "omnisharp",
 
-          -- C++
-          "ast-grep",
-          "cpptools",
+        -- SQL
+        "sqlls",
 
-          -- Markdown
-          "markdownlint",
-        } do
-          local p = mr.get_package(tool)
-          if not p:is_installed() then p:install() end
-        end
-    end)
-  end
+        -- HTML
+        "html-lsp",
+        "htmlbeautifier",
+        "htmlhint",
+
+        -- C++
+        "ast-grep",
+        "cpptools",
+
+        -- Markdown
+        "markdownlint",
+
+        -- Typescript
+        "typescript-language-server",
+        "eslint-lsp",
+        "json-lsp",
+        "css-lsp",
+      },
+  }
 }

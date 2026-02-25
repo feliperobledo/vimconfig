@@ -21,6 +21,13 @@ return {
 
           -- C/C++
           "clangd",
+
+          -- Typescript
+          "ts_ls",
+          "eslint",
+
+          -- Lua
+          "lua_ls",
       },
       automatic_installation = true,
       audomatic_update = true,
