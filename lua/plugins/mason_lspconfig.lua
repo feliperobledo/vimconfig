@@ -21,9 +21,6 @@ return {
 
           -- C/C++
           "clangd",
-
-          -- Java
-          "java-language-server",
       },
       automatic_installation = true,
       audomatic_update = true,
