@@ -1,43 +1,27 @@
 --[[
-    nvim-treesitter configuration for Neovim.
-
-    This configuration sets up the nvim-treesitter plugin to provide enhanced syntax highlighting and indentation
-    for various programming languages. The plugin is configured to automatically install parsers for a specified
-    list of languages and to update them when necessary.
-
-    Key Features:
-    - Automatic installation of language parsers.
-    - Syntax highlighting based on tree-sitter parsing.
-    - Improved indentation based on syntax structure.
-    - Commands for managing tree-sitter parsers.
-
-    Usage:
-    - The plugin will be loaded when a buffer is read (BufReadPost event).
-    - You can use the provided commands to manage tree-sitter parsers, such as installing new ones or updating existing ones.
-
-    Note:
-    - Ensure that you have the necessary build tools installed to compile tree-sitter parsers.
+Provides Tree-sitter parsing so highlighting, indentation, and text objects stay modern without legacy syntax packs.
+Auto-installs parsers for our main languages and keeps them updated via :TSUpdate.
 ]]
 return {
   "nvim-treesitter/nvim-treesitter",
   build = ":TSUpdate",
-  auto_install = true,
-  lazy = false,
-  cmd = {
-    "TSInstall",
-    "TSUpdate",
-    "TSInstallInfo",
-    "TSEnable",
-    "TSDisable",
-    "TSModuleInfo",
-    "TSUninstall",
-  },
+  event = { "BufReadPost", "BufNewFile" },
   opts = {
+    auto_install = true,
+    highlight = {
+      enable = true,
+      additional_vim_regex_highlighting = false,
+    },
+    indent = {
+      enable = true,
+    },
     ensure_installed = {
+      "bash",
       "c",
       "cpp",
       "css",
       "gitignore",
+      "graphql",
       "html",
       "java",
       "javadoc",
@@ -52,12 +36,5 @@ return {
       "vim",
       "yaml",
     },
-    highlight = {
-      enable = true,
-      additional_vim_regex_highlighting = false,
-    },
-    indent = {
-      enable = true,
-    },
-  },
+  }
 }
