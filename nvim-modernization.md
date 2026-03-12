@@ -24,10 +24,11 @@ Roadmap for migrating this configuration to a fully Neovim-native stack built on
 - [x] Add specs for the Neovim-native stack:
   - [x] `neovim/nvim-lspconfig` (`lua/plugins/nvim_lspconfig.lua`)
   - [x] `williamboman/mason.nvim` (`lua/plugins/mason.lua`)
-  - [x] `williamboman/mason-lspconfig.nvim` (`lua/plugins/mason.lua`).
-  - [x] `hrsh7th/nvim-cmp` plus sources (`lua/plugins/nvim_cmp.lua`, `cmp_nvim_lsp.lua`, `cmp_buffer.lua`, `cmp_path.lua`, `cmp_cmdline.lua`, `cmp_luasnip.lua`)
-  - [x] Snippet tooling (`lua/plugins/luasnip.lua`, `friendly_snippets.lua`)
+  - [x] `williamboman/mason-lspconfig.nvim` (`lua/plugins/mason_lspconfig.lua`)
+  - [x] `hrsh7th/nvim-cmp` plus sources (`lua/plugins/nvim_cmp.lua`, `cmp_nvim_lsp.lua`, `cmp_buffer.lua`, `cmp_path.lua`, `cmp_cmdline.lua`) — snippet integrations intentionally removed.
+  - [ ] Snippet tooling (intentionally deferred; relying on AI completions instead of LuaSnip/friendly-snippets).
   - [x] Optional helpers (`lua/plugins/neodev.lua`, `fidget.lua`, `trouble.lua`, `web_devicons.lua`, `omnisharp_extended.lua`)
+  - [x] Tree-sitter syntax stack (`nvim-treesitter/nvim-treesitter` and language parsers) to replace removed legacy syntax plugins.
 - [x] Mark legacy tooling for removal (`neoclide/coc.nvim`, `dense-analysis/ale`, `OmniSharp/omnisharp-vim`) and decide if any niche features need replacements.
   - Legacy specs remain in `lua/plugins/coc.lua`, `ale.lua`, `omnisharp.lua` and will be deleted during Phase 7 after native replacements are verified.
 
@@ -42,13 +43,16 @@ Roadmap for migrating this configuration to a fully Neovim-native stack built on
 
 ## Phase 4 — Server Registration
 
+- [ ] Plan server-specific settings so we can safely delete `coc.nvim`, `ale`, and `omnisharp-vim` during Phase 7 without losing features.
+      *Outstanding items:* replicate CoC keymaps, reapply OmniSharp mono/stdio flags, decide on formatting/diagnostic defaults per language.
 - [x] Register core servers through `lspconfig.<server>.setup` with the shared `on_attach` and capabilities (see `lua/config/lsp/servers/init.lua`).
 - [ ] Confirm per-language features (formatting, diagnostics) load without CoC/ALE.
 
 ## Phase 5 — Completion & Snippets
 
-- [ ] Add insert-mode mappings (`<Tab>`, `<S-Tab>`, `<CR>`) that mimic or improve upon the old CoC behavior.
-- [ ] Enable context-specific sources (LSP + snippets in insert mode, buffer/path in command-line modes).
+- [x] Configure `nvim-cmp` core setup (completion windows, mappings, command-line sources) in `lua/config/cmp.lua`.
+- [x] Add insert-mode mappings (`<Tab>`, `<S-Tab>`, `<CR>`) that mimic or improve upon the old CoC behavior.
+- [x] Enable context-specific sources (LSP for primary suggestions, buffer/path for fallback contexts).
 
 ## Phase 6 — UX Integration
 
@@ -74,3 +78,8 @@ Roadmap for migrating this configuration to a fully Neovim-native stack built on
 - [ ] Capture any manual install steps (e.g., system dependencies for specific servers).
 - [ ] Schedule periodic reviews of Mason-installed server versions and plugin updates.
 - [ ] Archive this checklist once completed and convert remaining tasks into issues if needed.
+
+## Notes
+
+- Look into integrating `olimorris/codecompanion.nvim` for integrated AI-assisted coding features as a future enhancement after the core LSP
+  migration is stable.
