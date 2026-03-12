@@ -27,7 +27,7 @@ Roadmap for migrating this configuration to a fully Neovim-native stack built on
   - [x] `williamboman/mason-lspconfig.nvim` (`lua/plugins/mason_lspconfig.lua`)
   - [x] `hrsh7th/nvim-cmp` plus sources (`lua/plugins/nvim_cmp.lua`, `cmp_nvim_lsp.lua`, `cmp_buffer.lua`, `cmp_path.lua`, `cmp_cmdline.lua`) — snippet integrations intentionally removed.
   - [ ] Snippet tooling (intentionally deferred; relying on AI completions instead of LuaSnip/friendly-snippets).
-  - [x] Optional helpers (`lua/plugins/neodev.lua`, `fidget.lua`, `trouble.lua`, `web_devicons.lua`, `omnisharp_extended.lua`)
+  - [x] Optional helpers (`lua/plugins/neodev.lua`, `fidget.lua`, `trouble.lua`, `web_devicons.lua`, `omnisharp_extended.lua`, `nvim_cmp.lua` uses `onsails/lspkind-nvim`)
   - [x] Tree-sitter syntax stack (`nvim-treesitter/nvim-treesitter` and language parsers) to replace removed legacy syntax plugins.
 - [x] Mark legacy tooling for removal (`neoclide/coc.nvim`, `dense-analysis/ale`, `OmniSharp/omnisharp-vim`) and decide if any niche features need replacements.
   - Legacy specs remain in `lua/plugins/coc.lua`, `ale.lua`, `omnisharp.lua` and will be deleted during Phase 7 after native replacements are verified.
