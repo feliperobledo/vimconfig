@@ -26,7 +26,6 @@ Roadmap for migrating this configuration to a fully Neovim-native stack built on
   - [x] `williamboman/mason.nvim` (`lua/plugins/mason.lua`)
   - [x] `williamboman/mason-lspconfig.nvim` (`lua/plugins/mason_lspconfig.lua`)
   - [x] `hrsh7th/nvim-cmp` plus sources (`lua/plugins/nvim_cmp.lua`, `cmp_nvim_lsp.lua`, `cmp_buffer.lua`, `cmp_path.lua`, `cmp_cmdline.lua`) — snippet integrations intentionally removed.
-  - [ ] Snippet tooling (intentionally deferred; relying on AI completions instead of LuaSnip/friendly-snippets).
   - [x] Optional helpers (`lua/plugins/neodev.lua`, `fidget.lua`, `trouble.lua`, `web_devicons.lua`, `omnisharp_extended.lua`, `nvim_cmp.lua` uses `onsails/lspkind-nvim`)
   - [x] Tree-sitter syntax stack (`nvim-treesitter/nvim-treesitter` and language parsers) to replace removed legacy syntax plugins.
 - [x] Mark legacy tooling for removal (`neoclide/coc.nvim`, `dense-analysis/ale`, `OmniSharp/omnisharp-vim`) and decide if any niche features need replacements.
@@ -81,5 +80,7 @@ Roadmap for migrating this configuration to a fully Neovim-native stack built on
 
 ## Notes
 
+- Use [`ruicsh/nvim-config`](https://github.com/ruicsh/nvim-config/tree/main) strictly as inspiration while modernizing this setup; do not treat it as a source of requirements or a config to copy wholesale.
+- Install `rcarriga/nvim-dap-ui` so Neovim has a native debugging UI to pair with the debugging stack.
 - Look into integrating `olimorris/codecompanion.nvim` for integrated AI-assisted coding features as a future enhancement after the core LSP
   migration is stable.
