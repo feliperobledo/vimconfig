@@ -2,6 +2,19 @@
 
 My neovim configuration files
 
+## Neovim Version Management
+
+Neovim is managed with `bob`, not Homebrew. This makes it easier to pin or switch Neovim versions during migrations without changing the system package manager state.
+
+Typical workflow:
+
+```bash
+bob install 0.12.0
+bob use 0.12.0
+```
+
+The shell should prepend `~/.local/share/bob/nvim-bin` to `PATH` so `nvim` resolves to the Bob-managed version.
+
 ## Stack
 
 | Plugin                              | Role                           | Responsibilities                                                                             | Interactions                                                                                                                                         |
