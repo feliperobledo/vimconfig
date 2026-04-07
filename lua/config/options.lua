@@ -56,6 +56,19 @@ vim.opt.undodir = state .. '/undo'
 vim.opt.backupdir = state .. '/backup'
 vim.opt.directory = cache .. '/swap'
 
+-- Keep sessions focused on the visible workspace instead of every hidden buffer.
+-- This avoids restoring special buffers such as health pages or logs when using
+-- `nvim -S`, which can trigger extra plugin/autocmd work during startup.
+vim.opt.sessionoptions = {
+  'curdir',
+  'folds',
+  'globals',
+  'localoptions',
+  'tabpages',
+  'terminal',
+  'winsize',
+}
+
 vim.opt.undofile = true
 vim.opt.backup = true
 vim.opt.swapfile = true
