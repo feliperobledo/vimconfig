@@ -15,8 +15,20 @@ function M.on_attach(client, bufnr)
     vim.keymap.set("n", lhs, rhs, { buffer = bufnr, desc = desc })
   end
 
+  local type_definition = function()
+    -- jdtls currently returns an invalid response for typeDefinition requests.
+    if client.name == "jdtls" then
+      vim.notify("LSP: type definition is not supported reliably for jdtls", vim.log.levels.WARN)
+      return
+    end
+
+    vim.lsp.buf.type_definition()
+  end
+
   map("gd", vim.lsp.buf.definition, "LSP: Go to definition")
-  map("gy", vim.lsp.buf.type_definition, "LSP: Type definition")
+  if client:supports_method("textDocument/typeDefinition") then
+    map("gy", type_definition, "LSP: Type definition")
+  end
   map("gr", vim.lsp.buf.references, "LSP: References")
   map("gI", vim.lsp.buf.implementation, "LSP: Implementation")
   map("K", vim.lsp.buf.hover, "LSP: Hover")
