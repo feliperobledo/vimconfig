@@ -73,12 +73,8 @@ vim.opt.undofile = true
 vim.opt.backup = true
 vim.opt.swapfile = true
 
--- Python providers (Neovim still reads these globals)
-vim.g.python_host_prog = vim.env.HOME .. '/.pyenv/versions/neovim2/bin/python'
-vim.g.python3_host_prog = vim.env.HOME .. '/.pyenv/versions/3.9.8/bin/python'
-
--- Language/plugin globals
-vim.g.coc_config_suggest_noselect = 1
+-- Python 3 provider: resolve the current global python3 on PATH.
+vim.g.python3_host_prog = vim.fn.exepath("python3")
 
 -- C Language options (globals expected by syntax tooling)
 vim.g.c_no_trail_space_error = 1

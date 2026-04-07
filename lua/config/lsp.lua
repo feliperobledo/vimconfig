@@ -16,6 +16,7 @@ function M.on_attach(client, bufnr)
   end
 
   map("gd", vim.lsp.buf.definition, "LSP: Go to definition")
+  map("gy", vim.lsp.buf.type_definition, "LSP: Type definition")
   map("gr", vim.lsp.buf.references, "LSP: References")
   map("gI", vim.lsp.buf.implementation, "LSP: Implementation")
   map("K", vim.lsp.buf.hover, "LSP: Hover")

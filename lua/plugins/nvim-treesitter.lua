@@ -52,6 +52,7 @@ local treesitter_filetypes = collect_treesitter_filetypes()
 return {
   "nvim-treesitter/nvim-treesitter",
   build = ":TSUpdate",
+  main = "nvim-treesitter",
   lazy = false,
   init = function()
     vim.api.nvim_create_autocmd("FileType", {
@@ -66,14 +67,6 @@ return {
     })
   end,
   opts = {
-    auto_install = true,
-    highlight = {
-      enable = true,
-      additional_vim_regex_highlighting = false,
-    },
-    indent = {
-      enable = true,
-    },
     ensure_installed = treesitter_languages,
   }
 }
