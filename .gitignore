@@ -6,3 +6,7 @@ plugged/
 
 # vim session
 Session.vim
+
+# vim logs
+.nvimlog
+nvim.log
