@@ -8,7 +8,7 @@ A personal Neovim configuration undergoing an active, planned migration from a C
 
 ## Architecture
 
-**Entry point**: `init.lua` loads modules in order: `config.options` → `config.lazy` → `config.lsp` → `config.keymaps` → `config.commands`
+**Entry point**: `init.lua` loads modules in order: `config.options` → `config.lazy` → `config.keymaps` → `config.commands`
 
 **Key directories**:
 - `lua/config/` — core modules (options, keymaps, commands, autocmds, lsp, lazy bootstrap)

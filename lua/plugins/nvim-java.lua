@@ -5,16 +5,10 @@ Uses jdtls as the LSP server, which is a popular choice for Java development in 
 return {
   'nvim-java/nvim-java',
   config = function()
-    local lsp = require("config.lsp")
-
     require('java').setup({
       jdk = {
         auto_install = false,
       },
-    })
-    vim.lsp.config('jdtls', {
-      capabilities = lsp.capabilities,
-      on_attach = lsp.on_attach,
     })
     vim.lsp.enable('jdtls')
   end,
