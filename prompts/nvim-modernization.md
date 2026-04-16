@@ -51,11 +51,11 @@ Why this phase exists:
 ### Phase 2 — Define Actual Server Ownership
 
 - [ ] Document which language path is authoritative for each filetype:
-  - [ ] C#: Mason-managed OmniSharp via native LSP.
   - [ ] Java: `nvim-java`.
-  - [ ] JS/TS, Python, Ruby, Lua, SQL, C/C++: Mason-managed servers.
+  - [ ] Mason-managed native LSP languages: C#, JS/TS, Python, Ruby, Lua, SQL, C/C++.
 - [x] GraphQL is not part of the active workflow right now; no active GraphQL LSP path is required until that work resumes.
-- [ ] Decide whether C# needs explicit OmniSharp settings beyond the current default Mason setup.
+- [x] C# should use the same Neovim-default LSP UX as the other Mason-managed languages; no C#-specific keymap layer remains.
+- [x] C# does not need explicit OmniSharp settings beyond the current default Mason-managed setup.
 - [ ] Verify the Mason package names still match the intended servers and tools in `lua/plugins/mason.lua`.
 - [ ] Decide whether `none-ls` or LSP should own formatting on a per-language basis.
 
@@ -71,7 +71,7 @@ Why this phase exists:
 - [ ] Add Telescope LSP pickers to keymaps if desired (`lsp_definitions`, `lsp_references`, diagnostics-related pickers).
 - [ ] Add explicit `vim.diagnostic` keymaps if the default UX is not enough.
 - [ ] Either configure Trouble usage properly or remove it from the modernization target.
-- [ ] Confirm `ftplugin/cs.lua` custom C# mappings are still worth keeping alongside the general LSP approach.
+- [x] Remove `ftplugin/cs.lua` custom C# mappings so C# follows the same LSP defaults as other Mason-managed languages.
 
 ### Phase 5 — Validation
 

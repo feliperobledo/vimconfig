@@ -54,5 +54,5 @@ Each plugin lives in its own file under `lua/plugins/`. When adding a new plugin
 
 ## Language Server Configuration
 
-Most servers come from Mason plus `mason-lspconfig` auto-enable rather than a shared custom LSP module. Exceptions:
-- **Java**: `nvim-java` handles the Java LSP lifecycle — see `lua/plugins/nvim-java.lua`
+Most servers come from Mason plus `mason-lspconfig` auto-enable rather than a shared custom LSP module.
+The only language-specific exception currently modeled in this repo is Java via `nvim-java` — see `lua/plugins/nvim-java.lua`.
