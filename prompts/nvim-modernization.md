@@ -50,9 +50,9 @@ Why this phase exists:
 
 ### Phase 2 — Define Actual Server Ownership
 
-- [ ] Document which language path is authoritative for each filetype:
-  - [ ] Java: `nvim-java`.
-  - [ ] Mason-managed native LSP languages: C#, JS/TS, Python, Ruby, Lua, SQL, C/C++.
+- [x] Document which language path is authoritative for each filetype:
+  - [x] Java: `nvim-java`.
+  - [x] Mason-managed native LSP languages: C#, JS/TS, Python, Ruby, Lua, SQL, C/C++.
 - [x] GraphQL is not part of the active workflow right now; no active GraphQL LSP path is required until that work resumes.
 - [x] C# should use the same Neovim-default LSP UX as the other Mason-managed languages; no C#-specific keymap layer remains.
 - [x] C# does not need explicit OmniSharp settings beyond the current default Mason-managed setup.

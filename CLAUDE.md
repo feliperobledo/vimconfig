@@ -56,3 +56,14 @@ Each plugin lives in its own file under `lua/plugins/`. When adding a new plugin
 
 Most servers come from Mason plus `mason-lspconfig` auto-enable rather than a shared custom LSP module.
 The only language-specific exception currently modeled in this repo is Java via `nvim-java` — see `lua/plugins/nvim-java.lua`.
+
+Current ownership by filetype:
+- **Java**: `nvim-java`
+- **C#**: Mason-managed native LSP
+- **JavaScript / TypeScript**: Mason-managed native LSP
+- **Python**: Mason-managed native LSP
+- **Ruby**: Mason-managed native LSP
+- **Lua**: Mason-managed native LSP
+- **SQL**: Mason-managed native LSP
+- **C / C++**: Mason-managed native LSP
+- **GraphQL**: not part of the active workflow right now; no active GraphQL LSP path is configured
