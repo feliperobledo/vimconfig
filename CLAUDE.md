@@ -11,7 +11,7 @@ A personal Neovim configuration undergoing an active, planned migration from a C
 **Entry point**: `init.lua` loads modules in order: `config.options` → `config.lazy` → `config.keymaps` → `config.commands`
 
 **Key directories**:
-- `lua/config/` — core modules (options, keymaps, commands, autocmds, graphql, lazy bootstrap)
+- `lua/config/` — core modules (options, keymaps, commands, lazy bootstrap)
 - `lua/plugins/` — one file per plugin spec (loaded by lazy.nvim)
 - `ftplugin/` — filetype-specific overrides (currently java, cpp, cs)
 
@@ -55,5 +55,4 @@ Each plugin lives in its own file under `lua/plugins/`. When adding a new plugin
 ## Language Server Configuration
 
 Most servers come from Mason plus `mason-lspconfig` auto-enable rather than a shared custom LSP module. Exceptions:
-- **GraphQL/Apollo**: custom setup in `lua/config/graphql.lua` (non-Mason path)
 - **Java**: `nvim-java` handles the Java LSP lifecycle — see `lua/plugins/nvim-java.lua`

@@ -53,16 +53,16 @@ Why this phase exists:
 - [ ] Document which language path is authoritative for each filetype:
   - [ ] C#: Mason-managed OmniSharp via native LSP.
   - [ ] Java: `nvim-java`.
-  - [ ] GraphQL: custom `rover lsp` startup in `lua/config/graphql.lua`.
   - [ ] JS/TS, Python, Ruby, Lua, SQL, C/C++: Mason-managed servers.
+- [x] GraphQL is not part of the active workflow right now; no active GraphQL LSP path is required until that work resumes.
 - [ ] Decide whether C# needs explicit OmniSharp settings beyond the current default Mason setup.
 - [ ] Verify the Mason package names still match the intended servers and tools in `lua/plugins/mason.lua`.
 - [ ] Decide whether `none-ls` or LSP should own formatting on a per-language basis.
 
-### Phase 3 — Reconnect Dormant Config
+### Phase 3 — Remove Dormant Config
 
-- [ ] Decide whether `lua/config/autocmd.lua` should be loaded from `init.lua`. It currently exists but is not required.
-- [ ] Decide whether `lua/config/graphql.lua` should be loaded from `init.lua` or moved into a plugin/filetype-driven path. It currently exists but is not required.
+- [x] Delete `lua/config/autocmd.lua` instead of reconnecting it. Its indentation logic belongs in `ftplugin/`, and the file was not loaded by `init.lua`.
+- [x] Delete `lua/config/graphql.lua` instead of reconnecting it. GraphQL is not part of the active workflow right now, and it can be reintroduced later with an intentional setup.
 - [ ] Remove or update dead comments that describe behavior that is not wired up anymore.
 
 ### Phase 4 — UX Integration
@@ -81,7 +81,6 @@ Why this phase exists:
   - [ ] JavaScript / TypeScript
   - [ ] Python
   - [ ] Ruby
-  - [ ] GraphQL
   - [ ] SQL
   - [ ] C / C++
 - [ ] Verify:
