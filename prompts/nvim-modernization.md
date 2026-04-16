@@ -1,86 +1,111 @@
 # Neovim Modernization Plan
 
-Roadmap for migrating this configuration to a fully Neovim-native stack built on built-in LSP, `mason.nvim`, and `nvim-cmp`. Work through the phases in order; each task uses Markdown checkboxes so progress is easy to track.
+Synchronized to the current repo state on April 16, 2026. This version reflects the live codebase plus recent git history, not the earlier target architecture that has since changed.
 
-## Phase 1 — Baseline Audit
+## Current Status
 
-- [x] Catalog current language tooling (CoC extensions, ALE linters, OmniSharp settings) and identify which languages must continue working.
-  - CoC (`neoclide/coc.nvim`) extensions: `coc-json`, `coc-tsserver`, `coc-eslint`, `coc-python`, `coc-pyls`, `coc-css`, `coc-highlight`, `coc-lua`, `coc-rust-analyzer`, `coc-sql` (JS/TS, JSON, ESLint, Python, Lua, Rust, SQL, CSS support).
-  - ALE runs OmniSharp for C# linting (`vim.g.ale_linters = { cs = { "OmniSharp" } }` with explicit mode enabled).
-  - OmniSharp Vim plugin configures C# server transport (`vim.g.OmniSharp_server_stdio = 1`, `vim.g.OmniSharp_server_use_mono = 1`).
-  - Additional language helpers currently active: `vim-clang-format` (C/C++), `vim-polyglot` (syntax pack), `uiiaoo/java-syntax.vim`, `vim-ruby/vim-ruby`, `sakhnik/nvim-gdb` for debugging, `Epitrochoid/marko-vim-syntax` (GraphQL/Marko), `honza/vim-snippets`.
-  - Globals referencing legacy tooling: `vim.g.coc_config_suggest_noselect = 1` in `lua/config/options.lua`.
-- [x] Record existing keymaps and UI integrations that rely on CoC/ALE (e.g., `<leader>gf`, statusline segments, autocmds).
-  - CoC keymaps are declared in per-language ftplugins (`ftplugin/javascript.vim`, `ftplugin/typescript.vim`, `ftplugin/python.vim`, `ftplugin/java.vim`) mapping to `<Plug>(coc-*)` actions for go-to-definition, references, diagnostics navigation.
-  - C# ftplugin (`ftplugin/cs.vim`) binds numerous OmniSharp commands (`gd`, `<Leader>fi`, `<Leader>fs`, `<Leader>fx`, `<Leader>tt`, `<Leader>dc`, `<C-\\>`) and sets `CursorHold` autocmd for type lookup.
-  - No explicit ALE statusline hooks found, but ALE is implicitly triggered via its default autocommands; note absence of custom keymaps to replicate diagnostic jumps later.
-- [x] Snapshot the current `lazy-lock.json` and plugin specs so removals/additions can be verified later.
-  - `lazy-lock.json` currently pins legacy tooling (`coc.nvim` @ `acaac49d5d3fe358ce0d67c91d78b1ada683d148`, `ale` @ `8c832181cfa91afd5a511cf45634225852b61682`, `omnisharp-vim` @ `c8f0f0ed811563beb6748ec425ee229c4fcf3388`).
-  - Lazy setup resides in `lua/config/lazy.lua` and imports plugin specs from `lua/plugins/*.lua`; ensure this structure stays in sync during migration.
-  - `lua/config/plugins.lua` still exists as a shim requiring `config.lazy`, so any references to `require("config.plugins")` remain functional for now.
+The migration is no longer at the "install the native stack" stage. That work is mostly done:
 
-## Phase 2 — Plugin Inventory Update
+- [x] `lazy.nvim` is the plugin manager (`lua/config/lazy.lua`).
+- [x] Native LSP plugins are present: `nvim-lspconfig`, `mason.nvim`, `mason-lspconfig.nvim`.
+- [x] Native completion is present: `nvim-cmp`, `cmp-nvim-lsp`, `cmp-buffer`, `cmp-path`, `cmp-cmdline`, `lspkind`.
+- [x] Tree-sitter is installed and configured (`lua/plugins/nvim-treesitter.lua`).
+- [x] `none-ls.nvim` is present for formatter/diagnostic integration (`lua/plugins/none-ls.lua`).
+- [x] Legacy CoC config has been removed from the repo: `coc-settings.json` is gone, CoC keymaps were stripped from `ftplugin/*.vim`, and the old `vim.g.coc_config_suggest_noselect` option is gone.
+- [x] Legacy CoC/ALE/OmniSharp Vim plugin specs are already absent from `lua/plugins/` and from the current `lazy-lock.json`.
 
-- [x] Add specs for the Neovim-native stack:
-  - [x] `neovim/nvim-lspconfig` (`lua/plugins/nvim_lspconfig.lua`)
-  - [x] `williamboman/mason.nvim` (`lua/plugins/mason.lua`)
-  - [x] `williamboman/mason-lspconfig.nvim` (`lua/plugins/mason_lspconfig.lua`)
-  - [x] `hrsh7th/nvim-cmp` plus sources (`lua/plugins/nvim_cmp.lua`, `cmp_nvim_lsp.lua`, `cmp_buffer.lua`, `cmp_path.lua`, `cmp_cmdline.lua`) — snippet integrations intentionally removed.
-  - [x] Optional helpers (`lua/plugins/neodev.lua`, `fidget.lua`, `trouble.lua`, `web_devicons.lua`, `omnisharp_extended.lua`, `nvim_cmp.lua` uses `onsails/lspkind-nvim`)
-  - [x] Tree-sitter syntax stack (`nvim-treesitter/nvim-treesitter` and language parsers) to replace removed legacy syntax plugins.
-- [x] Mark legacy tooling for removal (`neoclide/coc.nvim`, `dense-analysis/ale`, `OmniSharp/omnisharp-vim`) and decide if any niche features need replacements.
-  - Legacy specs remain in `lua/plugins/coc.lua`, `ale.lua`, `omnisharp.lua` and will be deleted during Phase 7 after native replacements are verified.
+What remains is mostly consolidation, validation, and cleanup of stale assumptions.
 
-## Phase 3 — Mason & LSP Bootstrap
+## Git Milestones Already Landed
 
-- [x] Create `lua/config/lsp/init.lua` to own shared LSP utilities (`on_attach`, capabilities).
-- [x] Initialize Mason in its plugin spec, enabling UI preferences and auto-install hooks via the registry.
-- [x] Use the Mason registry to ensure required language servers are installed (Python, C#, JavaScript/TypeScript, Ruby, GraphQL, JSON, CSS, Rust, SQL).
-- [x] Define a shared `on_attach` function for keymaps and buffer-local settings.
-- [x] Generate capabilities via `require("cmp_nvim_lsp").default_capabilities()` for later use in server setups.
-- [x] After the Mason/LSP bootstrap is in place, run `:Lazy sync` to download the new tooling bundle.
+- [x] `73bbf98` migrated the config to Lua.
+- [x] `513d49c`, `8c03008`, `954b73a`, `f60bb2d` introduced the native stack and removed CoC-era dependencies from the active setup.
+- [x] `ef28f39` and `f97153e` improved the `nvim-cmp` UX.
+- [x] `73f3dda` prepared for Neovim `0.12`: removed `coc-settings.json`, rewrote the C# ftplugin in Lua, and removed old CoC mappings from JS/TS/Python/Java ftplugins.
+- [x] `948c41c` intentionally removed `lua/config/lsp.lua` and custom shared LSP mappings in favor of Neovim defaults.
+- [x] `a0494eb` added `research/vim-pack-migration.md` for a possible future plugin-manager migration.
 
-## Phase 4 — Server Registration
+## Reality Check Against The Old Plan
 
-- [ ] Plan server-specific settings so we can safely delete `coc.nvim`, `ale`, and `omnisharp-vim` during Phase 7 without losing features.
-      *Outstanding items:* replicate CoC keymaps, reapply OmniSharp mono/stdio flags, decide on formatting/diagnostic defaults per language.
-- [x] Register core servers through `lspconfig.<server>.setup` with the shared `on_attach` and capabilities (see `lua/config/lsp/servers/init.lua`).
-- [ ] Confirm per-language features (formatting, diagnostics) load without CoC/ALE.
+The previous plan is stale in these ways:
 
-## Phase 5 — Completion & Snippets
+- [x] It refers to files that no longer exist, especially `lua/config/lsp.lua` and `lua/config/lsp/servers/*`.
+- [x] It assumes CoC, ALE, and `omnisharp-vim` still need to be removed; they are already gone from the active plugin set.
+- [x] It says CoC mappings still need to be rewritten; that work mostly landed in `73f3dda`.
+- [x] It assumes there is a shared `on_attach`/capabilities layer today; there is not.
 
-- [x] Configure `nvim-cmp` core setup (completion windows, mappings, command-line sources) in `lua/config/cmp.lua`.
-- [x] Add insert-mode mappings (`<Tab>`, `<S-Tab>`, `<CR>`) that mimic or improve upon the old CoC behavior.
-- [x] Enable context-specific sources (LSP for primary suggestions, buffer/path for fallback contexts).
+## Remaining Modernization Work
 
-## Phase 6 — UX Integration
+### Phase 1 — Standardize On Neovim 0.12 Defaults
 
-- [ ] Rewrite CoC-driven keymaps to use `vim.lsp.buf` equivalents (definitions, references, rename, code actions).
-- [ ] Update Telescope bindings to use new LSP pickers (`lsp_definitions`, `lsp_references`, `diagnostics`).
-- [ ] Replace ALE diagnostic commands with `vim.diagnostic` mappings (float, next/prev, setloclist).
-- [ ] Integrate optional UI enhancers (e.g., `fidget.nvim` for progress, `trouble.nvim` for diagnostics lists).
+- [x] Architectural direction: rely on Neovim `0.12` LSP defaults plus `mason-lspconfig` automatic enablement instead of reintroducing a shared custom LSP module.
+- [x] Update ftplugin comments that still reference deleted `lua/config/lsp.lua`.
+- [ ] Audit the config for places that still assume a shared `on_attach` / capabilities layer exists and remove those assumptions.
 
-## Phase 7 — Cleanup & Validation
+Why this phase exists:
 
-- [ ] Remove CoC, ALE, and OmniSharp Vim specs plus their remaining globals/config files.
-- [ ] Delete unused CoC extension lists and ALE-specific autocmds.
-- [ ] Run `:Lazy clean && :Lazy sync` to ensure only the new stack remains installed.
-- [ ] Open representative projects (C#, JS/TS, Python, Ruby, GraphQL) and verify:
-  - [ ] Language server auto-installs through Mason if missing.
-  - [ ] Hover, completion, diagnostics, formatting, and snippets work as expected.
-  - [ ] Keymaps trigger the new LSP-powered behavior without errors.
-- [ ] Update `lazy-lock.json` after confirming the environment is stable.
+- `948c41c` intentionally removed the custom shared LSP layer.
+- `lua/plugins/mason.lua` is now the main place that determines installed and auto-enabled servers.
+- Several docs and comments still describe the pre-`948c41c` setup instead of the current default-driven model.
 
-## Phase 8 — Documentation & Follow-Up
+### Phase 2 — Define Actual Server Ownership
 
-- [ ] Document new workflows (formatting, diagnostics navigation) in the repo README or wiki.
-- [ ] Capture any manual install steps (e.g., system dependencies for specific servers).
-- [ ] Schedule periodic reviews of Mason-installed server versions and plugin updates.
-- [ ] Archive this checklist once completed and convert remaining tasks into issues if needed.
+- [ ] Document which language path is authoritative for each filetype:
+  - [ ] C#: Mason-managed OmniSharp via native LSP.
+  - [ ] Java: `nvim-java`.
+  - [ ] GraphQL: custom `rover lsp` startup in `lua/config/graphql.lua`.
+  - [ ] JS/TS, Python, Ruby, Lua, SQL, C/C++: Mason-managed servers.
+- [ ] Decide whether C# needs explicit OmniSharp settings beyond the current default Mason setup.
+- [ ] Verify the Mason package names still match the intended servers and tools in `lua/plugins/mason.lua`.
+- [ ] Decide whether `none-ls` or LSP should own formatting on a per-language basis.
+
+### Phase 3 — Reconnect Dormant Config
+
+- [ ] Decide whether `lua/config/autocmd.lua` should be loaded from `init.lua`. It currently exists but is not required.
+- [ ] Decide whether `lua/config/graphql.lua` should be loaded from `init.lua` or moved into a plugin/filetype-driven path. It currently exists but is not required.
+- [ ] Remove or update dead comments that describe behavior that is not wired up anymore.
+
+### Phase 4 — UX Integration
+
+- [x] Baseline decision: Neovim default LSP mappings are the standard path unless a language-specific override is justified.
+- [ ] Add Telescope LSP pickers to keymaps if desired (`lsp_definitions`, `lsp_references`, diagnostics-related pickers).
+- [ ] Add explicit `vim.diagnostic` keymaps if the default UX is not enough.
+- [ ] Either configure Trouble usage properly or remove it from the modernization target.
+- [ ] Confirm `ftplugin/cs.lua` custom C# mappings are still worth keeping alongside the general LSP approach.
+
+### Phase 5 — Validation
+
+- [ ] Run through representative projects and confirm the current stack actually works end to end:
+  - [ ] C#
+  - [ ] Java
+  - [ ] JavaScript / TypeScript
+  - [ ] Python
+  - [ ] Ruby
+  - [ ] GraphQL
+  - [ ] SQL
+  - [ ] C / C++
+- [ ] Verify:
+  - [ ] LSP attach behavior
+  - [ ] completion quality
+  - [ ] diagnostics navigation
+  - [ ] formatting source
+  - [ ] hover / definition / references / rename / code actions
+- [ ] Only refresh `lazy-lock.json` after the configuration is intentionally settled.
+
+### Phase 6 — Documentation Cleanup
+
+- [ ] Update `README.md` so it no longer references deleted `lua/config/lsp/servers/*` structure.
+- [ ] Update `CLAUDE.md` to stop referencing deleted files and incomplete migration assumptions.
+- [ ] Document the final operating model once the LSP ownership and keymap decisions are settled.
+
+## Deferred / Optional Follow-Up
+
+- [ ] Decide whether to keep transitional legacy plugins such as `ag.nvim`, `FlyGrep.vim`, `ctrlsf.vim`, `vim-gitgutter`, `vim-clang-format`, and `vimspector`, or replace/remove them as part of a broader cleanup.
+- [ ] Evaluate `rcarriga/nvim-dap-ui` if the debugging stack is modernized further.
+- [ ] Keep `research/vim-pack-migration.md` separate from the LSP modernization effort; that is a later plugin-manager decision, not part of core feature parity.
 
 ## Notes
 
-- Use [`ruicsh/nvim-config`](https://github.com/ruicsh/nvim-config/tree/main) strictly as inspiration while modernizing this setup; do not treat it as a source of requirements or a config to copy wholesale.
-- Install `rcarriga/nvim-dap-ui` so Neovim has a native debugging UI to pair with the debugging stack.
-- Look into integrating `olimorris/codecompanion.nvim` for integrated AI-assisted coding features as a future enhancement after the core LSP
-  migration is stable.
+- `lazy-lock.json` is currently modified in the worktree. Do not treat the checked-in lockfile as finalized until validation is complete.
+- The intended LSP model is now Neovim `0.12` defaults plus `mason-lspconfig`, not a custom shared `on_attach` layer.
+- The biggest gap today is mostly documentation and validation drift: several docs/comments still assume the old shared LSP module exists.
