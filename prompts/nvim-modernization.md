@@ -40,7 +40,7 @@ The previous plan is stale in these ways:
 
 - [x] Architectural direction: rely on Neovim `0.12` LSP defaults plus `mason-lspconfig` automatic enablement instead of reintroducing a shared custom LSP module.
 - [x] Update ftplugin comments that still reference deleted `lua/config/lsp.lua`.
-- [ ] Audit the config for places that still assume a shared `on_attach` / capabilities layer exists and remove those assumptions.
+- [x] Audit the config for places that still assume a shared `on_attach` / capabilities layer exists and remove those assumptions.
 
 Why this phase exists:
 
@@ -94,7 +94,7 @@ Why this phase exists:
 
 ### Phase 6 — Documentation Cleanup
 
-- [ ] Update `README.md` so it no longer references deleted `lua/config/lsp/servers/*` structure.
+- [x] Update `README.md` so it no longer references deleted `lua/config/lsp/servers/*` structure.
 - [ ] Update `CLAUDE.md` to stop referencing deleted files and incomplete migration assumptions.
 - [ ] Document the final operating model once the LSP ownership and keymap decisions are settled.
 

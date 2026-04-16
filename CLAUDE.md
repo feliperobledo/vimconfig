@@ -11,27 +11,26 @@ A personal Neovim configuration undergoing an active, planned migration from a C
 **Entry point**: `init.lua` loads modules in order: `config.options` → `config.lazy` → `config.keymaps` → `config.commands`
 
 **Key directories**:
-- `lua/config/` — core modules (options, keymaps, commands, autocmds, lsp, lazy bootstrap)
+- `lua/config/` — core modules (options, keymaps, commands, autocmds, graphql, lazy bootstrap)
 - `lua/plugins/` — one file per plugin spec (loaded by lazy.nvim)
-- `ftplugin/` — filetype-specific overrides (js, ts, python, java, cpp, cs)
+- `ftplugin/` — filetype-specific overrides (currently java, cpp, cs)
 
 **Plugin manager**: lazy.nvim, bootstrapped in `lua/config/lazy.lua`. Run `:Lazy sync` to install/update, `:Lazy clean` to remove unused. Lock file: `lazy-lock.json`.
 
-**LSP layer**: `lua/config/lsp.lua` owns shared `on_attach()` and capabilities (from `cmp_nvim_lsp`). Language servers are installed via Mason and registered via mason-lspconfig. The `on_attach` function sets buffer-local omnifunc and standard LSP keymaps (`gd`, `gr`, `gI`, `K`, `<leader>rn`, `<leader>ca`, `<leader>f`, `[d`/`]d`).
+**LSP layer**: the repo relies on Neovim `0.12` LSP defaults plus Mason and `mason-lspconfig` automatic enablement. There is no shared `lua/config/lsp.lua` module anymore; language-specific behavior should be added only when a server actually needs an override.
 
-**Completion**: nvim-cmp with sources: nvim_lsp (primary), buffer, path, cmdline. Configured in `lua/config/cmp.lua`. Tab/S-Tab/CR mappings.
+**Completion**: nvim-cmp with sources: nvim_lsp (primary), buffer, path, cmdline. Configured in `lua/plugins/nvim_cmp.lua`. Tab/S-Tab/CR mappings.
 
 **Formatting**: none-ls.nvim integrates external formatters — prettier, black, stylua, rubocop, sql_formatter, markdownlint, htmlbeautifier.
 
 ## Migration Status
 
-Phases 1–3 and 5 are complete. Active work areas per `nvim-modernization.md`:
-- **Phase 4 (incomplete)**: per-language feature parity — CoC keymaps not yet replicated in ftplugin files; OmniSharp mono/stdio flags need migration
-- **Phase 6**: CoC-driven keymaps in ftplugins (`<Plug>(coc-*)`) still present in `ftplugin/*.vim` — these need to be rewritten to `vim.lsp.buf` equivalents
-- **Phase 7**: `coc-settings.json` and legacy references (`vim.g.coc_config_suggest_noselect` in options.lua) still present; CoC/ALE plugin specs to be removed after verification
-- **Phase 8**: Docs and follow-up
+The repo is past the initial native-stack migration. Active work now is mainly cleanup and validation:
+- align docs with the Neovim `0.12` default-driven LSP model
+- verify per-language behavior in real projects
+- decide which transitional plugins and language-specific overrides still belong
 
-When editing ftplugin files, prefer `vim.lsp.buf.*` over any `<Plug>(coc-*)` references. The goal is to eliminate all CoC dependencies.
+When editing ftplugin files, prefer Neovim defaults unless a filetype needs a specific override. CoC-era `<Plug>(coc-*)` mappings should not be reintroduced.
 
 ## Common Operations
 
@@ -51,11 +50,10 @@ When editing ftplugin files, prefer `vim.lsp.buf.*` over any `<Plug>(coc-*)` ref
 Each plugin lives in its own file under `lua/plugins/`. When adding a new plugin:
 1. Create `lua/plugins/<name>.lua` returning a lazy.nvim spec table
 2. Use `dependencies` to declare ordering requirements
-3. LSP server configs belong in the mason-lspconfig `handlers` table in `lua/plugins/mason_lspconfig.lua`, not as standalone `lspconfig.<server>.setup()` calls
+3. Keep server wiring consistent with the current model: default to Mason plus `mason-lspconfig` auto-enable, and only add explicit setup when a server requires it
 
 ## Language Server Configuration
 
-Servers are registered through mason-lspconfig handlers. All servers receive the shared `on_attach` and capabilities from `lua/config/lsp.lua`. Exceptions:
+Most servers come from Mason plus `mason-lspconfig` auto-enable rather than a shared custom LSP module. Exceptions:
 - **GraphQL/Apollo**: custom setup in `lua/config/graphql.lua` (non-Mason path)
-- **OmniSharp (C#)**: `omnisharp_extended` plugin wraps lspconfig for better go-to-definition — see `lua/plugins/omnisharp_extended.lua`
-- **Java**: `nvim-java` plugin handles the full Java LSP lifecycle — see `lua/plugins/nvim_java.lua`
+- **Java**: `nvim-java` handles the Java LSP lifecycle — see `lua/plugins/nvim-java.lua`
