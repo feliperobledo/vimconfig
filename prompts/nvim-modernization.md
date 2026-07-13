@@ -56,8 +56,8 @@ Why this phase exists:
 - [x] GraphQL is not part of the active workflow right now; no active GraphQL LSP path is required until that work resumes.
 - [x] C# should use the same Neovim-default LSP UX as the other Mason-managed languages; no C#-specific keymap layer remains.
 - [x] C# does not need explicit OmniSharp settings beyond the current default Mason-managed setup.
-- [ ] Verify the Mason package names still match the intended servers and tools in `lua/plugins/mason.lua`.
-- [ ] Decide whether `none-ls` or LSP should own formatting on a per-language basis.
+- [x] Verify the Mason package names still match the intended servers and tools in `lua/plugins/mason.lua`.
+- [x] Adopt `none-ls` as the default formatting integration layer where dedicated external formatters are preferred.
 
 ### Phase 3 — Remove Dormant Config
 
@@ -68,6 +68,10 @@ Why this phase exists:
 ### Phase 4 — UX Integration
 
 - [x] Baseline decision: Neovim default LSP mappings are the standard path unless a language-specific override is justified.
+- [ ] Decide how format-on-save should work, then wire it up intentionally:
+  - [ ] Choose whether auto-format-on-save should be global, opt-in by filetype, or limited to specific formatter-backed languages.
+  - [ ] Define whether `none-ls`, direct LSP formatting, or a mixed model owns formatting on write for each language.
+  - [ ] Implement the `BufWritePre` / formatting flow so save-time formatting behavior is predictable and does not create formatter conflicts.
 - [ ] Add Telescope LSP pickers to keymaps if desired (`lsp_definitions`, `lsp_references`, diagnostics-related pickers).
 - [ ] Add explicit `vim.diagnostic` keymaps if the default UX is not enough.
 - [ ] Either configure Trouble usage properly or remove it from the modernization target.
