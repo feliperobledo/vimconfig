@@ -10,3 +10,6 @@ Session.vim
 # vim logs
 .nvimlog
 nvim.log
+
+.tokensave/
+.claude/

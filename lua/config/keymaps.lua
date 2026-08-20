@@ -77,3 +77,10 @@ map({ "n", "v" }, "<leader>d", '"_d')
 
 -- Paste over selection without yanking replaced text
 map("v", "p", '"_dP')
+
+-- Custom LSP Keybindings
+vim.api.nvim_create_autocmd("LspAttach", {
+    callback = function(args)
+        vim.keymap.set("n", "gd", vim.lsp.buf.definition, { buffer = args.buf })
+    end
+})
