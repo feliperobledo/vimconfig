@@ -37,6 +37,10 @@ return {
         -- C++
         "ast-grep",
         "cpptools",
+        "neocmakelsp",
+
+        -- Shader Languages
+        "slang",
 
         -- Markdown
         "markdownlint",
