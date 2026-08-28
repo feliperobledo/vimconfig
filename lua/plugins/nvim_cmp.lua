@@ -66,9 +66,10 @@ return {
       window = {
         completion = cmp.config.window.bordered({
             border = "rounded",
+            winhighlight = "Normal:CmpDoc,FloatBorder:CmpDocBorder",
         }),
         documentation = cmp.config.window.bordered({
-            border = "single",
+            border = "rounded",
             winhighlight = "Normal:CmpDoc,FloatBorder:CmpDocBorder",
         }),
       },
