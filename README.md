@@ -30,3 +30,9 @@ The shell should prepend `~/.local/share/bob/nvim-bin` to `PATH` so `nvim` resol
 | `j-hui/fidget.nvim`                 | LSP progress UI                | Display asynchronous LSP request progress without blocking editing.                          | Hooks into handlers registered via `nvim-lspconfig`.                                                                                                 |
 | `folke/trouble.nvim`                | Diagnostics/workspace list     | Visualize diagnostics, references, and quickfix items in a dedicated panel.                  | Consumes `vim.diagnostic` data from LSP servers and integrates with Telescope pickers.                                                               |
 | `Hoffs/omnisharp-extended-lsp.nvim` | OmniSharp navigation helper    | Provide enhanced definition handlers for C# LSP responses if explicit OmniSharp customization is added later. | Not currently wired through a shared LSP module in this repo.                                                                                         |
+
+## TODO
+
+- [ ] Learn how to use MCP hub
+- [ ] Learn how to use Codecompanion
+

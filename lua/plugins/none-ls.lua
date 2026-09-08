@@ -14,7 +14,7 @@ return {
                 null_ls.builtins.formatting.markdownlint,
                 null_ls.builtins.formatting.htmlbeautifier,
                 null_ls.builtins.diagnostics.markdownlint,
-                null_ls.builtins.diagnostics.clang_format
+                null_ls.builtins.formatting.clang_format
             },
         }
     end

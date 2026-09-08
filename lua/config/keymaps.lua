@@ -84,3 +84,8 @@ vim.api.nvim_create_autocmd("LspAttach", {
         vim.keymap.set("n", "gd", vim.lsp.buf.definition, { buffer = args.buf })
     end
 })
+
+-- [C]odeCompanion [P]rompt]
+vim.keymap.set({ "n", "v" }, "<LocalLeader>cp", function()
+  return require("codecompanion").cli({ prompt = true })
+end, { desc = "Prompt the CLI agent" })

@@ -88,3 +88,6 @@ vim.api.nvim_set_hl(0, "CmpPMenuBorder", { link = "FloatBorder" })
 vim.api.nvim_set_hl(0, "CmpPMenuSel", { link = "PmenuSel" })
 vim.api.nvim_set_hl(0, "CmpDoc", { link = "NormalFloat" })
 vim.api.nvim_set_hl(0, "CmpDocBorder", { link = "FloatBorder" })
+
+-- nvim-notify required options
+vim.opt.termguicolors = true
