@@ -45,6 +45,9 @@ return {
         -- Markdown
         "markdownlint",
 
+        -- Terraform
+        "ms-terraform-lsp",
+
         -- Typescript
         "typescript-language-server",
         "eslint-lsp",

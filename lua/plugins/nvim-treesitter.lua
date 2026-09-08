@@ -9,16 +9,18 @@ local treesitter_by_parser = {
   css = "css",
   gitignore = "gitignore",
   graphql = "graphql",
+  hcl = "hcl",
   html = "html",
   java = "java",
-  javascript = "javascript",
+  javascript = { "javascript", "javascriptreact" },
   javadoc = false,
   json = "json",
   lua = "lua",
   markdown = "markdown",
   markdown_inline = false,
   python = "python",
-  tsx = false,
+  terraform = "terraform",
+  tsx = "typescriptreact",
   typescript = "typescript",
   vim = "vim",
   yaml = "yaml",
@@ -37,7 +39,11 @@ end
 local function collect_treesitter_filetypes()
   local filetypes = {}
   for _, filetype in pairs(treesitter_by_parser) do
-    if filetype then
+    if type(filetype) == "table" then
+      for _, alias in ipairs(filetype) do
+        table.insert(filetypes, alias)
+      end
+    elseif filetype then
       table.insert(filetypes, filetype)
     end
   end
@@ -52,7 +58,6 @@ local treesitter_filetypes = collect_treesitter_filetypes()
 return {
   "nvim-treesitter/nvim-treesitter",
   build = ":TSUpdate",
-  main = "nvim-treesitter",
   lazy = false,
   init = function()
     vim.api.nvim_create_autocmd("FileType", {
@@ -66,7 +71,10 @@ return {
       end,
     })
   end,
-  opts = {
-    ensure_installed = treesitter_languages,
-  }
+  config = function()
+    -- On the main branch, setup() only accepts install_dir; parsers must be
+    -- requested explicitly. install() skips languages already on disk.
+    require("nvim-treesitter").setup()
+    require("nvim-treesitter").install(treesitter_languages)
+  end,
 }
