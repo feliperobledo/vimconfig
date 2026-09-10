@@ -79,9 +79,65 @@ map({ "n", "v" }, "<leader>d", '"_d')
 map("v", "p", '"_dP')
 
 -- Custom LSP Keybindings
+
+-- Find a window already showing `path`, preferring one in the current tab.
+-- Paths are compared after resolving symlinks, since the LSP reports real paths.
+local function find_win_for_file(path)
+  local target = vim.uv.fs_realpath(path) or path
+  for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+    local name = vim.api.nvim_buf_get_name(buf)
+    if name ~= "" and (vim.uv.fs_realpath(name) or name) == target then
+      local wins = vim.fn.win_findbuf(buf)
+      local current_tab = vim.api.nvim_get_current_tabpage()
+      for _, win in ipairs(wins) do
+        if vim.api.nvim_win_get_tabpage(win) == current_tab then
+          return win
+        end
+      end
+      return wins[1]
+    end
+  end
+end
+
+-- Jump to definition, reusing a tab that already shows the file and opening a
+-- new tab only when none does.
+local function goto_definition()
+  vim.lsp.buf.definition({
+    -- on_list runs only after the server answers, so we never open an empty
+    -- tab when there is no definition to jump to.
+    on_list = function(result)
+      local items = result.items
+      if #items == 0 then
+        vim.notify("No definition found", vim.log.levels.WARN)
+        return
+      end
+      if #items > 1 then
+        -- Ambiguous: fall back to the quickfix list instead of guessing.
+        vim.fn.setqflist({}, " ", result)
+        vim.cmd("botright copen")
+        return
+      end
+
+      local item = items[1]
+      local win = find_win_for_file(item.filename)
+      if win then
+        -- Also switches to the window's tab if it lives in another one.
+        vim.api.nvim_set_current_win(win)
+      else
+        -- :tabedit opens the file in a fresh tab and focuses it.
+        vim.cmd.tabedit(vim.fn.fnameescape(item.filename))
+      end
+      -- Record the pre-jump position so <C-o> works for jumps within a file.
+      vim.cmd("normal! m'")
+      vim.api.nvim_win_set_cursor(0, { item.lnum, item.col - 1 })
+      vim.cmd("normal! zz")
+    end,
+  })
+end
+
 vim.api.nvim_create_autocmd("LspAttach", {
     callback = function(args)
-        vim.keymap.set("n", "gd", vim.lsp.buf.definition, { buffer = args.buf })
+        vim.keymap.set("n", "gd", goto_definition, { buffer = args.buf })
     end
 })
 
