@@ -34,6 +34,9 @@ return {
         "htmlbeautifier",
         "htmlhint",
 
+        -- CSS,
+        "css-lsp",
+
         -- C++
         "ast-grep",
         "cpptools",
