@@ -99,45 +99,52 @@ local function find_win_for_file(path)
   end
 end
 
--- Jump to definition, reusing a tab that already shows the file and opening a
--- new tab only when none does.
-local function goto_definition()
-  vim.lsp.buf.definition({
-    -- on_list runs only after the server answers, so we never open an empty
-    -- tab when there is no definition to jump to.
-    on_list = function(result)
-      local items = result.items
-      if #items == 0 then
-        vim.notify("No definition found", vim.log.levels.WARN)
-        return
-      end
-      if #items > 1 then
-        -- Ambiguous: fall back to the quickfix list instead of guessing.
-        vim.fn.setqflist({}, " ", result)
-        vim.cmd("botright copen")
-        return
-      end
+-- Wrap an `vim.lsp.buf` jump function so it reuses a tab that already shows the
+-- target file and opens a new tab only when none does. `what` names the thing
+-- being looked up, for the "not found" message.
+local function tab_jump(lsp_fn, what)
+  return function()
+    lsp_fn({
+      -- on_list runs only after the server answers, so we never open an empty
+      -- tab when there is nothing to jump to.
+      on_list = function(result)
+        local items = result.items
+        if #items == 0 then
+          vim.notify("No " .. what .. " found", vim.log.levels.WARN)
+          return
+        end
+        if #items > 1 then
+          -- Ambiguous: fall back to the quickfix list instead of guessing.
+          vim.fn.setqflist({}, " ", result)
+          vim.cmd("botright copen")
+          return
+        end
 
-      local item = items[1]
-      local win = find_win_for_file(item.filename)
-      if win then
-        -- Also switches to the window's tab if it lives in another one.
-        vim.api.nvim_set_current_win(win)
-      else
-        -- :tabedit opens the file in a fresh tab and focuses it.
-        vim.cmd.tabedit(vim.fn.fnameescape(item.filename))
-      end
-      -- Record the pre-jump position so <C-o> works for jumps within a file.
-      vim.cmd("normal! m'")
-      vim.api.nvim_win_set_cursor(0, { item.lnum, item.col - 1 })
-      vim.cmd("normal! zz")
-    end,
-  })
+        local item = items[1]
+        local win = find_win_for_file(item.filename)
+        if win then
+          -- Also switches to the window's tab if it lives in another one.
+          vim.api.nvim_set_current_win(win)
+        else
+          -- :tabedit opens the file in a fresh tab and focuses it.
+          vim.cmd.tabedit(vim.fn.fnameescape(item.filename))
+        end
+        -- Record the pre-jump position so <C-o> works for jumps within a file.
+        vim.cmd("normal! m'")
+        vim.api.nvim_win_set_cursor(0, { item.lnum, item.col - 1 })
+        vim.cmd("normal! zz")
+      end,
+    })
+  end
 end
 
 vim.api.nvim_create_autocmd("LspAttach", {
     callback = function(args)
-        vim.keymap.set("n", "gd", goto_definition, { buffer = args.buf })
+        local opts = { buffer = args.buf }
+        vim.keymap.set("n", "gd", tab_jump(vim.lsp.buf.definition, "definition"), opts)
+        -- Override the stock gri/grt so they land in a tab like gd does.
+        vim.keymap.set("n", "gri", tab_jump(vim.lsp.buf.implementation, "implementation"), opts)
+        vim.keymap.set("n", "grt", tab_jump(vim.lsp.buf.type_definition, "type definition"), opts)
     end
 })
 
