@@ -1,6 +1,7 @@
 --[[
 Installs Mason, the external tool manager that downloads LSP servers, formatters, and linters.
-This will own server lifecycle once we retire manual installs from CoC and ALE.
+Mason itself only provides the UI and the installer; what actually gets installed is declared by
+mason-lspconfig below (language servers) and by mason-tool-installer (formatters and linters).
 ]]
 return {
   {
@@ -15,54 +16,14 @@ return {
           package_uninstalled = "✗",
         },
       },
-      ensure_installed = {
-        -- Python
-        "pyright",
-        "black",
-
-        -- Ruby
-        "solargraph",
-
-        -- C#
-        "omnisharp",
-
-        -- SQL
-        "sqlls",
-
-        -- HTML
-        "html-lsp",
-        "htmlbeautifier",
-        "htmlhint",
-
-        -- CSS,
-        "css-lsp",
-
-        -- C++
-        "ast-grep",
-        "cpptools",
-        "neocmakelsp",
-
-        -- Shader Languages
-        "slang",
-
-        -- Markdown
-        "markdownlint",
-
-        -- Terraform
-        "ms-terraform-lsp",
-
-        -- Typescript
-        "typescript-language-server",
-        "eslint-lsp",
-        "json-lsp",
-        "css-lsp",
-      },
     },
   },
   {
     "mason-org/mason-lspconfig.nvim",
     dependencies = { "williamboman/mason.nvim", "neovim/nvim-lspconfig" },
     opts = {
+      -- lspconfig server names, not Mason package names. mason-lspconfig translates
+      -- them to packages itself (e.g. cssls -> css-lsp).
       ensure_installed = {
         -- Python
         "pyright",
@@ -78,15 +39,29 @@ return {
 
         -- C/C++
         "clangd",
+        "neocmake",
+
+        -- Shader Languages
+        "slangd",
+
+        -- HTML / CSS / JSON
+        "html",
+        "cssls",
+        "jsonls",
 
         -- Typescript
         "ts_ls",
         "eslint",
 
+        -- Terraform
+        "ms_terraform_lsp",
+
         -- Lua
         "lua_ls",
+
+        -- Structural search
+        "ast_grep",
       },
-      automatic_installation = true,
       automatic_enable = true,
     },
   },

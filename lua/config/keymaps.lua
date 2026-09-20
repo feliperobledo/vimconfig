@@ -21,11 +21,8 @@ map("n", "<C-H>", "<C-W>h<C-W>_")
 -- Collapse each opened file into a single line with its filename
 vim.opt.wmh = 0
 
-map("n", "<F8>", ":tabprevious<CR>")
-map("n", "<F9>", ":tabnext<CR>")
+-- Tab navigation uses the built-in gt/gT; F8 and F9 are left free for the debugger.
 map("n", "<C-t>", ":tabnew<CR>")
-map("i", "<F8>", "<Esc>:tabprevious<CR>i")
-map("i", "<F9>", "<Esc>:tabnext<CR>i")
 map("i", "<C-t>", "<Esc>:tabnew<CR>i")
 
 -- Sessions
@@ -45,7 +42,7 @@ vim.opt.shiftwidth = my_tab
 vim.opt.softtabstop = my_tab
 vim.opt.expandtab = true
 
--- Toggle tabs/spaces (F10 mapping)
+-- Toggle tabs/spaces
 -- allow toggling between local and default mode
 local function tab_toggle()
   if vim.opt.expandtab:get() then
@@ -59,7 +56,7 @@ local function tab_toggle()
   end
 end
 
-map("n", "<F10>", function()
+map("n", "<leader>ts", function()
       -- mimic: mz ... 'z (keep cursor position)
       local pos = vim.api.nvim_win_get_cursor(0)
       tab_toggle()
