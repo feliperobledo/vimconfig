@@ -38,6 +38,8 @@ Surveyed 2026-11-06:
   `CMakeCXXCompiler.cmake`: `AppleClang 21.0.0`). Switching would mean setting
   `CMAKE_CXX_COMPILER` in the `base` preset; not part of this plan. So the binary uses Apple's libc++, and the "lldb-dap matches the compiler" argument no
   longer holds exactly. The formatter (step 2) must also be checked against an Apple clang build.
+  Apple clang 21 does support `-std=c++23` `<expected>`, and every `expected` layout tested in step 2
+  matched Homebrew's libc++. Keep checking both: untested type combinations may still differ.
 - **C++20**, so `std::expected` (C++23) isn't used in magister. The formatter is verified with a
   standalone program instead.
 - **Runtime files.** Shaders are found relative to the executable (`whereami`), but
@@ -116,20 +118,25 @@ Surveyed 2026-11-06:
 
 ## 2. `std::expected` formatter — `lldb/libcxx_expected.py`
 
-- [ ] Write an LLDB synthetic-children provider + summary for `^std::__1::expected<.+>$`:
-  - [ ] Summary: `has value` / `has error`
-  - [ ] One child: `Value` or `Error`, rendered with its own formatter (e.g. `std::string`)
-  - [ ] Locate `__has_val_`, `__val_`, `__unex_` by searching member names, not a hard-coded path
+- [x] Write an LLDB synthetic-children provider + summary for `^std::(__[[:alnum:]]+::)?expected<.+>$`
+      (LLDB matches both the real name `std::__1::expected<…>` and the display name
+      `std::expected<…>`, so the inline namespace is optional):
+  - [x] Summary: `has value` / `has error`
+  - [x] One child: `Value` or `Error`, rendered with its own formatter (e.g. `std::string`)
+  - [x] Locate `__has_val_`, `__val_`, `__unex_` by searching member names, not a hard-coded path
         (observed path: `__repr_.__v.__has_val_` and `__repr_.__v.__union_.__v.{__val_,__unex_}`;
         libc++ varies the layout by type)
-  - [ ] `expected<void, E>`: summary only, no `Value` child
-  - [ ] `__lldb_init_module` registers both providers
-- [ ] Verify in plain `lldb` against a `-g -O0 -std=c++23` test program covering: value state,
+  - [x] `expected<void, E>`: summary only, no `Value` child
+  - [x] `__lldb_init_module` registers both providers
+- [x] Verify in plain `lldb` against a `-g -O0 -std=c++23` test program covering: value state,
       error state, `expected<void, std::string>`, a trivially-destructible `E` (e.g. `int`), and
       `expected<std::vector<int>, std::string>`.
-- [ ] Repeat with the program built by **both** Homebrew clang 22 and Apple clang 21 (`/usr/bin/c++`),
+- [x] Repeat with the program built by **both** Homebrew clang 22 and Apple clang 21 (`/usr/bin/c++`),
       since magister uses Apple's libc++ and its `expected` layout may differ.
-- [ ] Verify the same rendering through Vimspector's variables window.
+
+Note: rendering in Vimspector's variables window is verified in step 8 (it needs step 5's launch
+configuration). Interim evidence is a DAP harness that sends Vimspector's request sequence to
+lldb-dap; it got the same values from both compilers' builds.
 
 ## 3. Remove `nvim-gdb`
 
