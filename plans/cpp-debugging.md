@@ -72,23 +72,23 @@ Surveyed 2026-11-06:
 
 ## 1. Vimspector + lldb-dap adapter — `lua/plugins/vimspector.lua`
 
-- [ ] Resolve the adapter path: `vim.fn.exepath("lldb-dap")`, falling back to
+- [x] Resolve the adapter path: `vim.fn.exepath("lldb-dap")`, falling back to
       `/opt/homebrew/opt/llvm/bin/lldb-dap`; warn once if neither is executable. (`~/.zshrc` puts
       `llvm/bin` on `PATH`, so `exepath` hits when Neovim starts from a shell; the fallback covers
       other launches.)
-- [ ] In `init`, define `g:vimspector_adapters["lldb-dap"]`:
-  - [ ] `command` = resolved path (stdio adapter)
-  - [ ] `attach = { pidProperty = "pid", pidSelect = "ask" }`
-  - [ ] `configuration` defaults, including `initCommands` that import the step-2 formatter by
+- [x] In `init`, define `g:vimspector_adapters["lldb-dap"]`:
+  - [x] `command` = resolved path (stdio adapter)
+  - [x] `attach = { pidProperty = "pid", pidSelect = "ask" }`
+  - [x] `configuration` defaults, including `initCommands` that import the step-2 formatter by
         absolute path (`vim.fn.stdpath("config") .. "/lldb/libcxx_expected.py"`)
-- [ ] In `init`, raise `g:vimspector_sign_priority` for `vimspectorBP`, `vimspectorBPCond`,
+- [x] In `init`, raise `g:vimspector_sign_priority` for `vimspectorBP`, `vimspectorBPCond`,
       `vimspectorBPLog`, `vimspectorBPDisabled` and `vimspectorNonActivePC` from 9 to 12 (above
       gitgutter's 10). Keep them equal so Vimspector can combine them.
-- [ ] Leave `g:vimspector_enable_mappings` unset.
-- [ ] Add a `build` step that compiles the process-list helper:
+- [x] Leave `g:vimspector_enable_mappings` unset.
+- [x] Add a `build` step that compiles the process-list helper:
       `cd support/vimspector_process_list && go build`. Confirm `go` resolves from Neovim's
       `PATH` (it lives at `/usr/local/go/bin/go`).
-- [ ] In `config`, map:
+- [x] In `config`, map:
 
   | Key | Action | `<Plug>` target |
   | --- | --- | --- |
@@ -110,8 +110,9 @@ Surveyed 2026-11-06:
   and visual mode, and any `,d…` mapping would make it wait for `timeoutlen` (decided
   2026-11-08).
 
-- [ ] Verify each key reaches Neovim in the terminal in use. If macOS takes `F11` (Show Desktop) or
-      the terminal mangles `S-F*`, move step-out to `F12` and update this table.
+- [x] Verify each key reaches Neovim in the terminal in use. macOS's Show Desktop shortcut on `F11`
+      (System Settings → Keyboard → Keyboard Shortcuts → Mission Control) must stay disabled, or it
+      swallows step-into.
 
 ## 2. `std::expected` formatter — `lldb/libcxx_expected.py`
 
@@ -155,6 +156,9 @@ Surveyed 2026-11-06:
 
 - [ ] Add an `Attach (pick process)` configuration to the template: `request: "attach"`,
       `pid: "${PickProcess(\"${program}\")}"` or equivalent.
+      Note: the step-1 adapter's `pidSelect = "ask"` only prompts when an attach config has no
+      `pid`, and then lists every process with no name filter (`debug_session.py:1734-1742`).
+      `${PickProcess(...)}` sets `pid` itself, so the adapter block is only a fallback.
 - [ ] Add an `Attach (wait for launch)` configuration: `request: "attach"`, `program` +
       `waitFor: true`.
 - [ ] Confirm the step-1 `build` produced `support/vimspector_process_list/vimspector_process_list`,
@@ -212,7 +216,7 @@ Surveyed 2026-11-06:
       (first run of `lldb-dap` *through Vimspector*).
 - [ ] Variables window renders `vector`, `string`, `map`, `optional`, `variant`, `span`,
       `unique_ptr` and `expected`.
-- [ ] Watches and hover (`,di`) evaluate expressions; `target.import-std-module` remains off.
+- [ ] Watches and hover (`,Di`) evaluate expressions; `target.import-std-module` remains off.
 - [ ] Step over / into / out, run to cursor, pause, stop and restart all work.
 - [ ] Conditional breakpoint and function breakpoint both stop correctly.
 - [ ] Breakpoint signs are visible on lines gitgutter has marked.
