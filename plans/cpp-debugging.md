@@ -146,9 +146,13 @@ lldb-dap; it got the same values from both compilers' builds.
 
 ## 4. Breakpoint persistence — `lua/config/keymaps.lua`
 
-- [ ] `F2` also runs `:VimspectorMkSession`.
-- [ ] `F3` also runs `:VimspectorLoadSession`, only if `.vimspector.session` exists.
-- [ ] Verify: set breakpoints → `F2` → quit → reopen → `F3` → breakpoints restored.
+- [x] `F2` also writes `<cwd>/.vimspector.session` (next to `Session.vim`), but only when
+      breakpoints exist or the file already exists, via `vimspector#WriteSessionFile` with an
+      explicit path.
+- [x] `F3` loads that file after `Session.vim`, only if it exists, via
+      `vimspector#ReadSessionFile` with the explicit path worked out before sourcing.
+- Known limitation: watches alone, or exception-breakpoint settings alone, don't create the file.
+- [x] Verify: set breakpoints → `F2` → quit → reopen → `F3` → breakpoints restored.
 
 ## 5. Launch configuration template — `templates/` + `lua/config/commands.lua`
 
