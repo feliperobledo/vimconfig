@@ -1,0 +1,35 @@
+{
+  "$schema": "https://puremourning.github.io/vimspector/schema/vimspector.schema.json",
+  // Written by :VimspectorInitCpp. Vimspector strips // and /* */ comments before parsing.
+  "configurations": {
+    "Launch": {
+      "adapter": "lldb-dap",
+      "filetypes": ["c", "cpp"],
+      // Answers lldb-dap's exception filters up front; without this, every launch asks
+      // four Y/N questions. Set "cpp_throw": "Y" to stop wherever a C++ exception is thrown.
+      "breakpoints": {
+        "exception": {
+          "cpp_throw": "N",
+          "cpp_catch": "N",
+          "objc_throw": "N",
+          "objc_catch": "N"
+        }
+      },
+      "configuration": {
+        "request": "launch",
+        // ${program} and ${args} are asked for on first launch and remembered as defaults.
+        // ${program} is relative to this file's directory (${workspaceRoot}).
+        "program": "${workspaceRoot}/${program}",
+        // Split like a shell command line; an empty answer passes no arguments.
+        "args": ["*${args}"],
+        "cwd": "${workspaceRoot}",
+        "stopOnEntry": false
+
+        // Path remapping (binaries built elsewhere): use lldb-dap's "sourceMap", an array of
+        // [from, to] pairs or a {"from": "to"} object. Never set "initCommands" here: it
+        // replaces the adapter's list, which loads the std::expected formatter.
+        // "sourceMap": [["/build/machine/src", "${workspaceRoot}"]]
+      }
+    }
+  }
+}

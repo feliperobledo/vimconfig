@@ -69,6 +69,13 @@ Surveyed 2026-11-06:
   gitignored upstream.
 - Attach fails confusingly against hardened-runtime binaries without `get-task-allow`
   ("Trying to resume but the async thread is dead"). Plain `clang++` / CMake `Debug` builds are fine.
+- Every `.vimspector.json` configuration (launch or attach, hand-written or generated) must carry
+  a `breakpoints.exception` block answering lldb-dap's four filters (`cpp_throw`, `cpp_catch`,
+  `objc_throw`, `objc_catch`). Without it Vimspector asks four Y/N questions on every launch
+  (`breakpoints.py:1199-1215`); headless, that stalled the launch until it timed out. It can't go
+  in the adapter: Vimspector reads it from the configuration entry only
+  (`debug_session.py:2057-2058`), while the adapter's `configuration` merges into the DAP launch
+  arguments.
 
 ---
 
@@ -156,11 +163,15 @@ lldb-dap; it got the same values from both compilers' builds.
 
 ## 5. Launch configuration template — `templates/` + `lua/config/commands.lua`
 
-- [ ] `templates/vimspector-cpp.json` with a generic `Launch` entry: adapter `lldb-dap`,
+- [x] `templates/vimspector-cpp.json` with a generic `Launch` entry: adapter `lldb-dap`,
       `filetypes: ["c", "cpp"]`, `program: "${workspaceRoot}/${program}"`, `args: ["*${args}"]`,
-      `cwd: "${workspaceRoot}"`, `stopOnEntry: false`.
-- [ ] Path remapping goes through lldb-dap's `sourceMap`, never a project-level `initCommands`.
-- [ ] `:VimspectorInitCpp` copies the template to the project root as `.vimspector.json`; refuses to
+      `cwd: "${workspaceRoot}"`, `stopOnEntry: false`. Also:
+      - `"request": "launch"`: required. Vimspector builds the DAP request from
+        `_launch_config['request']` with no default (`debug_session.py:1958`).
+      - `breakpoints.exception` with `cpp_throw`, `cpp_catch`, `objc_throw`, `objc_catch` all
+        `"N"` (lldb-dap's own defaults): without it, every launch asks four Y/N questions.
+- [x] Path remapping goes through lldb-dap's `sourceMap`, never a project-level `initCommands`.
+- [x] `:VimspectorInitCpp` copies the template to the project root as `.vimspector.json`; refuses to
       overwrite an existing file unless called with `!`.
 
 ## 6. Attach to a running process (required)
@@ -172,6 +183,9 @@ lldb-dap; it got the same values from both compilers' builds.
       `${PickProcess(...)}` sets `pid` itself, so the adapter block is only a fallback.
 - [ ] Add an `Attach (wait for launch)` configuration: `request: "attach"`, `program` +
       `waitFor: true`.
+- Each attach configuration needs the same `breakpoints.exception` block as `Launch`: Vimspector
+  reads it per configuration only (`debug_session.py:2057-2058`), so it can't be shared through
+  the adapter.
 - [ ] Confirm the step-1 `build` produced `support/vimspector_process_list/vimspector_process_list`,
       and that `${PickProcess()}` lists processes in Neovim.
 - [ ] Verify attach by PID on magister: start `build/debug/magister` from a shell, attach from
@@ -189,6 +203,11 @@ lldb-dap; it got the same values from both compilers' builds.
 - [ ] Make `:VimspectorInitCpp` CMake-aware: when `CMakeLists.txt` is at the project root, generate
       one `Launch` (and one attach) configuration **per executable target** instead of the generic
       `${program}` prompt.
+- Every generated configuration (launch and attach) carries the `breakpoints.exception` block
+  from step 5 (per-configuration only, `debug_session.py:2057-2058`).
+- Produce the generated `.vimspector.json` outright (e.g. `vim.json.encode` on a Lua table, then
+  `write_vimspector_json` in `commands.lua`) rather than merging into the commented template:
+  `vim.json.decode` can't read the template's comments.
 - [ ] **Presets first.** If `CMakePresets.json` exists, use the `debug` configure preset (or ask
       when there's no preset by that name): configure with `cmake --preset <name>` and build with
       `cmake --build --preset <name>`. Read the build dir from the preset's `binaryDir`
