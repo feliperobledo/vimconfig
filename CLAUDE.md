@@ -67,3 +67,7 @@ Current ownership by filetype:
 - **SQL**: Mason-managed native LSP
 - **C / C++**: Mason-managed native LSP
 - **GraphQL**: not part of the active workflow right now; no active GraphQL LSP path is configured
+
+## Debugging
+
+**Attach fails on hardened-runtime binaries.** If a Vimspector attach reports "Attached to process N" and then dies with "Trying to resume but the async thread is dead", the target's signature is refusing the debugger, not the config. Check with `codesign -dv --entitlements - <bin>`: plain `clang++` / CMake `Debug` builds show `flags=0x20002(adhoc,linker-signed)` and attach fine; `runtime` in the flags without `com.apple.security.get-task-allow` means attach is refused. Workaround for a local copy: re-sign with that entitlement set to `true`, e.g. `codesign -f -s - -o runtime --entitlements gta.plist <bin>` where `gta.plist` is a plist containing `<key>com.apple.security.get-task-allow</key><true/>`.

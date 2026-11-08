@@ -30,6 +30,54 @@
         // replaces the adapter's list, which loads the std::expected formatter.
         // "sourceMap": [["/build/machine/src", "${workspaceRoot}"]]
       }
+    },
+    // Attach configurations. Stopping or resetting the debugger detaches and leaves the
+    // process running: Vimspector's disconnect omits terminateDebuggee and lldb-dap defaults
+    // it to false for attach. If :VimspectorReset asks "Terminate debuggee?", answer N or D.
+    // If attach fails with "Trying to resume but the async thread is dead", the target is
+    // hardened-runtime signed: see CLAUDE.md, "Debugging".
+    "Attach (pick process)": {
+      "adapter": "lldb-dap",
+      "filetypes": ["c", "cpp"],
+      "breakpoints": {
+        "exception": {
+          "cpp_throw": "N",
+          "cpp_catch": "N",
+          "objc_throw": "N",
+          "objc_catch": "N"
+        }
+      },
+      // The picker filters by process name, but ${program} is a path: take its basename.
+      // ${program} is the variable Launch asks for; its last answer is offered as the default.
+      "variables": {
+        "programName": { "shell": ["basename", "${program}"] }
+      },
+      "configuration": {
+        "request": "attach",
+        // Lists this user's processes named exactly ${programName} ("$$" is a literal "$");
+        // a single match is offered as the default. "#json" sends the pid as a number.
+        "pid#json": "${PickProcess(\"^${programName}$$\")}"
+      }
+    },
+    "Attach (wait for launch)": {
+      "adapter": "lldb-dap",
+      "filetypes": ["c", "cpp"],
+      "breakpoints": {
+        "exception": {
+          "cpp_throw": "N",
+          "cpp_catch": "N",
+          "objc_throw": "N",
+          "objc_catch": "N"
+        }
+      },
+      "configuration": {
+        "request": "attach",
+        // Waits for the next process started from this binary and attaches tens of ms after
+        // it starts: breaks in startup code (not the first lines of main) of a program
+        // launched elsewhere.
+        "program": "${workspaceRoot}/${program}",
+        "waitFor": true
+      }
     }
   }
 }

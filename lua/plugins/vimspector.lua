@@ -62,8 +62,9 @@ return {
     vim.g.vimspector_adapters = {
       ["lldb-dap"] = {
         command = { lldb_dap },
-        -- Lets an attach config without a `pid` prompt for one.
-        attach = { pidProperty = "pid", pidSelect = "ask" },
+        -- No `attach` block: with `pidSelect = "ask"`, Vimspector asks for a PID (from an
+        -- unfiltered process list) whenever an attach config has no `pid`, which breaks
+        -- `waitFor` configs. Attach configs get their pid from ${PickProcess()} instead.
         configuration = adapter_configuration(),
       },
     }
@@ -97,6 +98,9 @@ return {
     map("n", "<S-F11>", "<Plug>VimspectorStepOut", { desc = "Debug: step out" })
     map("n", "<leader><F10>", "<Plug>VimspectorRunToCursor", { desc = "Debug: run to cursor" })
     map({ "n", "x" }, "<leader>Di", "<Plug>VimspectorBalloonEval", { desc = "Debug: inspect value under cursor" })
-    map("n", "<leader>DX", "<cmd>VimspectorReset<cr>", { desc = "Debug: reset (close debug UI)" })
+    -- Non-interactive Reset: unlike :VimspectorReset it never asks "Terminate debuggee?".
+    -- It sends a plain disconnect, so lldb-dap detaches from an attached process (leaving it
+    -- running) and terminates a launched one.
+    map("n", "<leader>DX", "<cmd>call vimspector#Reset()<cr>", { desc = "Debug: reset (detach / end session, close UI)" })
   end,
 }

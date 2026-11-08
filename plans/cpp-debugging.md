@@ -88,6 +88,8 @@ Surveyed 2026-11-06:
 - [x] In `init`, define `g:vimspector_adapters["lldb-dap"]`:
   - [x] `command` = resolved path (stdio adapter)
   - [x] `attach = { pidProperty = "pid", pidSelect = "ask" }`
+        Note: removed in step 6. It took over every attach config without a `pid`, which
+        includes `waitFor` configs (see step 6).
   - [x] `configuration` defaults, including `initCommands` that import the step-2 formatter by
         absolute path (`vim.fn.stdpath("config") .. "/lldb/libcxx_expected.py"`)
 - [x] In `init`, raise `g:vimspector_sign_priority` for `vimspectorBP`, `vimspectorBPCond`,
@@ -114,6 +116,9 @@ Surveyed 2026-11-06:
   | `,F10` | Run to cursor | `VimspectorRunToCursor` |
   | `,Di` | Inspect value under cursor | `VimspectorBalloonEval` (n + x) |
   | `,DX` | Reset (close debug UI) | `:VimspectorReset` |
+
+  Note: since step 6, `,DX` calls `vimspector#Reset()` without the interactive flag, so it never
+  asks "Terminate debuggee?" (see step 6).
 
   Leader-based debug keys live under `,D`, **never `,d`**: `,d` is the `"_d` operator in normal
   and visual mode, and any `,d…` mapping would make it wait for `timeoutlen` (decided
@@ -176,26 +181,40 @@ lldb-dap; it got the same values from both compilers' builds.
 
 ## 6. Attach to a running process (required)
 
-- [ ] Add an `Attach (pick process)` configuration to the template: `request: "attach"`,
-      `pid: "${PickProcess(\"${program}\")}"` or equivalent.
-      Note: the step-1 adapter's `pidSelect = "ask"` only prompts when an attach config has no
-      `pid`, and then lists every process with no name filter (`debug_session.py:1734-1742`).
-      `${PickProcess(...)}` sets `pid` itself, so the adapter block is only a fallback.
-- [ ] Add an `Attach (wait for launch)` configuration: `request: "attach"`, `program` +
+- [x] Add an `Attach (pick process)` configuration to the template: `request: "attach"`,
+      `"pid#json": "${PickProcess(\"^${programName}$$\")}"`, with a configuration-level
+      `variables` entry `programName: { shell: ["basename", "${program}"] }`.
+      - The picker matches its argument as a regex against the process *name*, and `${program}`
+        is a path, so `${PickProcess(\"${program}\")}` would list nothing. Nested variables do
+        expand inside the argument (`utils.py:586`, `:676-684`).
+      - Anchored (`^…$$`, where `$$` is a literal `$`), a single match is pre-filled as the
+        default PID (`debug_session.py:2382-2383`).
+      - `#json` is required: substitution always yields a string (`utils.py:635`), and lldb-dap
+        rejects it with `expected uint64_t at arguments.pid`.
+- [x] Add an `Attach (wait for launch)` configuration: `request: "attach"`, `program` +
       `waitFor: true`.
+- Note: the step-1 adapter's `attach = { pidSelect = "ask" }` took over every attach config
+  without a `pid` (`debug_session.py:1734-1742`): it asked for a PID from an unfiltered list,
+  which hijacked `waitFor` configs (and hung headless runs). It was removed; attach configs supply
+  `pid` through `${PickProcess()}` or use `waitFor`.
 - Each attach configuration needs the same `breakpoints.exception` block as `Launch`: Vimspector
   reads it per configuration only (`debug_session.py:2057-2058`), so it can't be shared through
   the adapter.
-- [ ] Confirm the step-1 `build` produced `support/vimspector_process_list/vimspector_process_list`,
+- [x] Confirm the step-1 `build` produced `support/vimspector_process_list/vimspector_process_list`,
       and that `${PickProcess()}` lists processes in Neovim.
-- [ ] Verify attach by PID on magister: start `build/debug/magister` from a shell, attach from
+- [x] Verify attach by PID on magister: start `build/debug/magister` from a shell, attach from
       Neovim while the triangle is rendering, hit a breakpoint in the render loop, inspect locals,
       continue.
-- [ ] Verify `waitFor` on magister: issue the attach, then start the game, and catch it in startup
-      code (e.g. Vulkan/GLFW initialisation).
-- [ ] Verify detach leaves the game running and rendering (`:VimspectorReset` / stop without
-      terminating).
-- [ ] Document the hardened-runtime failure mode and the `get-task-allow` re-sign workaround in
+- [x] Verify `waitFor` on magister: issue the attach, then start the game, and catch it in startup
+      code. `waitFor` attaches about 40–50 ms after the process starts, so it can't catch the
+      first lines of `main`: on magister it stops at `main.cpp:334`, after
+      `glfwContext.init()`, not in GLFW init itself.
+- [x] Verify detach leaves the game running and rendering. `<S-F5>` (Stop) and `,DX` send a plain
+      `disconnect {}`, which lldb-dap treats as detach for attached processes (and terminate for
+      launched ones). `:VimspectorReset` asks "Terminate debuggee?" whenever the process is alive
+      (`stack_trace.py:517-523`); Y kills an attached process. So `,DX` maps to the
+      non-interactive `vimspector#Reset()`.
+- [x] Document the hardened-runtime failure mode and the `get-task-allow` re-sign workaround in
       `CLAUDE.md`'s debugging section.
 
 ## 7. CMake integration (required)
@@ -258,6 +277,8 @@ lldb-dap; it got the same values from both compilers' builds.
 - [ ] `CLAUDE.md`: add a "Debugging" section — Vimspector + lldb-dap, key table,
       `:VimspectorInitCpp`, `:CMakeDebug`, the `std::expected` formatter, the `initCommands` rule,
       and the attach/hardened-runtime note.
+- [ ] `CLAUDE.md` Debugging section: say that `<S-F5>` (Stop) and `,DX` detach silently, while
+      `:VimspectorReset` asks "Terminate debuggee?" and answering Y kills an attached process.
 - [ ] `research/cpp-debugging.md`: record the decisions above, the formatter/expression test
       results, and the `import-std-module` crash. Correct its claim that `lldb-dap` isn't on
       `PATH` (it is, via `~/.zshrc`).
