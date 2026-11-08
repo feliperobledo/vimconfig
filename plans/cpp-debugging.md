@@ -140,9 +140,9 @@ lldb-dap; it got the same values from both compilers' builds.
 
 ## 3. Remove `nvim-gdb`
 
-- [ ] Delete `lua/plugins/nvim_gdb.lua`.
-- [ ] `:Lazy clean`, and confirm `nvim-gdb` is gone from `lazy-lock.json`.
-- [ ] Confirm `,d` (`"_d`) fires without the `timeoutlen` delay.
+- [x] Delete `lua/plugins/nvim_gdb.lua`.
+- [x] `:Lazy clean`, and confirm `nvim-gdb` is gone from `lazy-lock.json`.
+- [x] Confirm `,d` (`"_d`) fires without the `timeoutlen` delay.
 
 ## 4. Breakpoint persistence — `lua/config/keymaps.lua`
 
@@ -238,6 +238,9 @@ lldb-dap; it got the same values from both compilers' builds.
 - [ ] `research/cpp-debugging.md`: record the decisions above, the formatter/expression test
       results, and the `import-std-module` crash. Correct its claim that `lldb-dap` isn't on
       `PATH` (it is, via `~/.zshrc`).
+- [ ] `research/vim-pack-migration.md`: update the build-hook list (around lines 155–158) — remove
+      the deleted `lua/plugins/nvim_gdb.lua` entry and add `lua/plugins/vimspector.lua`'s `go build`
+      of `vimspector_process_list`.
 
 ---
 
