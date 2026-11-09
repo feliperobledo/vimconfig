@@ -20,6 +20,13 @@ local DEBUG_BUILD_TYPES = { Debug = true, RelWithDebInfo = true }
 -- lldb-dap's exception filters, answered per configuration (see templates/vimspector-cpp.json).
 local EXCEPTION_FILTERS = { cpp_throw = "N", cpp_catch = "N", objc_throw = "N", objc_catch = "N" }
 
+-- With runInTerminal, lldb-dap starts the program in the terminal and *attaches*, so the bare
+-- `disconnect` sent by Stop, ,DX and Restart detaches and leaves it running. terminateCommands
+-- run after that detach (a plain `process kill` fails), so kill the pid lldb remembers, but only
+-- if the session ended by detaching (not when the program exited). Same as the template's Launch.
+local KILL_DETACHED_LAUNCH = "script import os, signal; p = lldb.debugger.GetSelectedTarget().GetProcess(); "
+  .. "os.kill(p.GetProcessID(), signal.SIGKILL) if p.GetState() == lldb.eStateDetached else None"
+
 -- clang/gcc diagnostics plus CMake's own errors. Paths relative to the build dir (which some
 -- generators can print) resolve through a synthetic "Entering directory" first line (%D).
 local ERRORFORMAT = table.concat({
@@ -452,6 +459,7 @@ local function target_configurations(root, target)
       stopOnEntry = false,
       -- Output goes to a Vimspector terminal (a real TTY, so colours render), not the Console.
       runInTerminal = true,
+      terminateCommands = { KILL_DETACHED_LAUNCH },
     }),
     [target.name .. ": Attach (pick process)"] = entry({
       request = "attach",

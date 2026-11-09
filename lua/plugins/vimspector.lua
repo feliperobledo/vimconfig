@@ -99,8 +99,9 @@ return {
     map("n", "<leader><F10>", "<Plug>VimspectorRunToCursor", { desc = "Debug: run to cursor" })
     map({ "n", "x" }, "<leader>Di", "<Plug>VimspectorBalloonEval", { desc = "Debug: inspect value under cursor" })
     -- Non-interactive Reset: unlike :VimspectorReset it never asks "Terminate debuggee?".
-    -- It sends a plain disconnect, so lldb-dap detaches from an attached process (leaving it
-    -- running) and terminates a launched one.
+    -- It sends a plain disconnect, so lldb-dap detaches: an attached process keeps running. A
+    -- launched one (runInTerminal, which lldb-dap attaches to) is then killed by the launch
+    -- config's terminateCommands (templates/vimspector-cpp.json, lua/config/cmake_debug.lua).
     map("n", "<leader>DX", "<cmd>call vimspector#Reset()<cr>", { desc = "Debug: reset (detach / end session, close UI)" })
   end,
 }

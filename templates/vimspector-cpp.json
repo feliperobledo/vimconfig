@@ -26,7 +26,11 @@
         "stopOnEntry": false,
         // Runs the program in a Vimspector terminal window (a real TTY: colours render, stdin
         // works) instead of sending its output to the Console, which shows escape codes raw.
-        "runInTerminal": true
+        "runInTerminal": true,
+        // runInTerminal makes lldb-dap attach to the program it started, so Stop / ,DX / Restart
+        // (a bare disconnect) would only detach. These run after that detach: kill the program
+        // if the session ended by detaching, not when it exited. Keep this out of attach configs.
+        "terminateCommands": ["script import os, signal; p = lldb.debugger.GetSelectedTarget().GetProcess(); os.kill(p.GetProcessID(), signal.SIGKILL) if p.GetState() == lldb.eStateDetached else None"]
 
         // Path remapping (binaries built elsewhere): use lldb-dap's "sourceMap", an array of
         // [from, to] pairs or a {"from": "to"} object. Never set "initCommands" here: it

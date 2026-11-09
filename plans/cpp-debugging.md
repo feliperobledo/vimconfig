@@ -235,8 +235,10 @@ lldb-dap; it got the same values from both compilers' builds.
       first lines of `main`: on magister it stops at `main.cpp:334`, after
       `glfwContext.init()`, not in GLFW init itself.
 - [x] Verify detach leaves the game running and rendering. `<S-F5>` (Stop) and `,DX` send a plain
-      `disconnect {}`, which lldb-dap treats as detach for attached processes (and terminate for
-      launched ones). `:VimspectorReset` asks "Terminate debuggee?" whenever the process is alive
+      `disconnect {}`, which lldb-dap treats as detach for attached processes. (At step 6 it also
+      terminated launched ones; since step 7's `runInTerminal`, lldb-dap attaches to the programs
+      it launches, and the launch configs' `terminateCommands` kill them instead: see step 7.)
+      `:VimspectorReset` asks "Terminate debuggee?" whenever the process is alive
       (`stack_trace.py:517-523`); Y kills an attached process. So `,DX` maps to the
       non-interactive `vimspector#Reset()`.
 - [x] Document the hardened-runtime failure mode and the `get-task-allow` re-sign workaround in
@@ -286,6 +288,18 @@ lldb-dap; it got the same values from both compilers' builds.
 - Generated launch configurations set `"runInTerminal": true`, like the template's `Launch` (see
   the step-5 note): the program runs in a Vimspector terminal with colours, and breakpoints bind
   as before. Attach configurations don't set it.
+- Defect found in step 8, fixed here: with `runInTerminal`, lldb-dap starts the program through
+  `lldb-dap --launch-target` and *attaches* to it, so the bare `disconnect {}` that `<S-F5>`, `,DX`
+  and `<C-S-F5>` send only detached. The program kept running, and Restart left two instances.
+  lldb-dap 22.1.8 has no launch option that makes a bare disconnect terminate here, and its
+  `terminateCommands` run *after* the detach (`process kill` → "error: process must be
+  launched"). lldb still remembers the pid, with state `detached`. So every Launch configuration
+  (template and generated) carries a `terminateCommands` entry that SIGKILLs that pid only when
+  the state is `detached`. On a normal exit the state is `exited`, so nothing is killed. Attach
+  configurations don't carry it, so Stop and `,DX` still only detach from them. No Vimspector
+  internals are involved. Trade-off: `:VimspectorReset` → "Terminate debuggee?" → N also ends a
+  *launched* program, because lldb-dap detaches and the command then kills it. Leaving a launched
+  program running is no longer possible; attach to it instead.
 - [x] Verify on magister: `:VimspectorInitCpp` → pick `magister` → the window opens and renders the
       triangle under the debugger. If Vulkan can't find a driver, add the needed variables
       (from `$VULKAN_HOME/setup-env.sh`) to the generated config's `env`.
