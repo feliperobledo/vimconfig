@@ -76,6 +76,19 @@ Surveyed 2026-11-06:
   in the adapter: Vimspector reads it from the configuration entry only
   (`debug_session.py:2057-2058`), while the adapter's `configuration` merges into the DAP launch
   arguments.
+- `vimspector#ClearBreakpoints()` (also the breakpoints window's "Clr All" button) doesn't
+  clear them in lldb-dap during a session. It empties Vimspector's own list, then
+  `SendBreakpoints` sends `setBreakpoints` only for files still in that list
+  (`breakpoints.py:986`), so the emptied files are never re-sent and lldb-dap keeps stopping at
+  the "cleared" lines. Found in step 7: after clearing and continuing, magister stopped at
+  `main.cpp:1476` again. Clearing lines one by one (`vimspector#ClearLineBreakpoint`, or `F9` on
+  the line) sends an empty `setBreakpoints` for the file and works, and so does restarting the
+  session. The step-6 drivers did call it after the first stop, so their "continue" re-stopped at
+  the same breakpoint (`a1`: "signs while running: vimspectorPC@6"; `b1`, on magister:
+  "vimspectorPC@1476", with two `breakpoint` stop events in its log). That still showed
+  `continue` resuming, since a new stop event arrived. The `,DX` and `:VimspectorReset` detach
+  runs didn't clear breakpoints, and `b1`'s `vimspector#Stop` (`<S-F5>`) detached from a process
+  stopped at a breakpoint either way. So the step-6 conclusions don't depend on it.
 
 ---
 
@@ -95,6 +108,12 @@ Surveyed 2026-11-06:
 - [x] In `init`, raise `g:vimspector_sign_priority` for `vimspectorBP`, `vimspectorBPCond`,
       `vimspectorBPLog`, `vimspectorBPDisabled` and `vimspectorNonActivePC` from 9 to 12 (above
       gitgutter's 10). Keep them equal so Vimspector can combine them.
+      Note: with Neovim's default `signcolumn=auto` (one sign per line), the breakpoint then hid
+      gitgutter's change marker on the same line (seen in step 7's manual check). Since step 7,
+      `lua/config/options.lua` sets `signcolumn = "auto:2"`: the line shows both, breakpoint
+      first, because the priorities still order them. The column is two cells wide when no line
+      has more than one sign, as before, and four cells, for the whole window, while any line
+      has two.
 - [x] Leave `g:vimspector_enable_mappings` unset.
 - [x] Add a `build` step that compiles the process-list helper:
       `cd support/vimspector_process_list && go build`. Confirm `go` resolves from Neovim's
@@ -176,6 +195,12 @@ lldb-dap; it got the same values from both compilers' builds.
       - `breakpoints.exception` with `cpp_throw`, `cpp_catch`, `objc_throw`, `objc_catch` all
         `"N"` (lldb-dap's own defaults): without it, every launch asks four Y/N questions.
 - [x] Path remapping goes through lldb-dap's `sourceMap`, never a project-level `initCommands`.
+- Note (step 7): `Launch` also sets `"runInTerminal": true`. Without it lldb-dap sends the
+  program's output to Vimspector's Console, a plain buffer that shows colour escape codes raw
+  (magister's spdlog output: `[36mdebug[m`). With it, lldb-dap asks Vimspector (which
+  advertises `supportsRunInTerminalRequest`) to start `lldb-dap --launch-target <program>` in a
+  terminal window, then attaches. The program gets a real TTY, and the Console keeps only
+  lldb-dap's own messages. Attach configurations don't need it.
 - [x] `:VimspectorInitCpp` copies the template to the project root as `.vimspector.json`; refuses to
       overwrite an existing file unless called with `!`.
 
@@ -219,7 +244,7 @@ lldb-dap; it got the same values from both compilers' builds.
 
 ## 7. CMake integration (required)
 
-- [ ] Make `:VimspectorInitCpp` CMake-aware: when `CMakeLists.txt` is at the project root, generate
+- [x] Make `:VimspectorInitCpp` CMake-aware: when `CMakeLists.txt` is at the project root, generate
       one `Launch` (and one attach) configuration **per executable target** instead of the generic
       `${program}` prompt.
 - Every generated configuration (launch and attach) carries the `breakpoints.exception` block
@@ -227,35 +252,58 @@ lldb-dap; it got the same values from both compilers' builds.
 - Produce the generated `.vimspector.json` outright (e.g. `vim.json.encode` on a Lua table, then
   `write_vimspector_json` in `commands.lua`) rather than merging into the commented template:
   `vim.json.decode` can't read the template's comments.
-- [ ] **Presets first.** If `CMakePresets.json` exists, use the `debug` configure preset (or ask
+- [x] **Presets first.** If `CMakePresets.json` exists, use the `debug` configure preset (or ask
       when there's no preset by that name): configure with `cmake --preset <name>` and build with
       `cmake --build --preset <name>`. Read the build dir from the preset's `binaryDir`
       (magister: `build/debug`). Without presets, fall back to `build/` and configure with
       `-DCMAKE_BUILD_TYPE=Debug -DCMAKE_EXPORT_COMPILE_COMMANDS=ON`.
-- [ ] Never use an in-source `CMakeCache.txt` at the project root (magister has a stray one).
-- [ ] Discover targets through the CMake File API: write the `codemodel-v2` query under
+      Note: as built, `-DCMAKE_BUILD_TYPE=Debug` is passed only on the first configure (no
+      `build/CMakeCache.txt` yet). Passing it every time would quietly turn an existing Release
+      `build/` into Debug, so the build-type refusal below could never trigger. An existing
+      `build/` keeps its type and gets the check.
+- [x] Never use an in-source `CMakeCache.txt` at the project root (magister has a stray one).
+- [x] Discover targets through the CMake File API: write the `codemodel-v2` query under
       `<build>/.cmake/api/v1/query/`, re-run configure, then read `EXECUTABLE` targets and their
       artifact paths from `<build>/.cmake/api/v1/reply/`.
-- [ ] Only list the project's own targets: drop anything whose source dir is under `<build>/_deps`
+- [x] Only list the project's own targets: drop anything whose source dir is under `<build>/_deps`
       or outside the project root. Magister should list exactly `magister` and
       `magister_engine_tests`.
-- [ ] Set each configuration's `cwd` to the executable's directory (magister needs it for
+- [x] Set each configuration's `cwd` to the executable's directory (magister needs it for
       `vk_layer_settings.txt`).
-- [ ] Refuse (with a clear message) if the build dir's `CMAKE_BUILD_TYPE` is not `Debug` or
+- [x] Refuse (with a clear message) if the build dir's `CMAKE_BUILD_TYPE` is not `Debug` or
       `RelWithDebInfo`.
-- [ ] Add a build-then-debug command (e.g. `:CMakeDebug`): build via the preset (or
+- [x] Add a build-then-debug command (e.g. `:CMakeDebug`): build via the preset (or
       `cmake --build <build>`), and only on success start Vimspector. Build errors land in the
       quickfix list.
-- [ ] Verify on magister: `:VimspectorInitCpp` → pick `magister` → the window opens and renders the
+      Note: as built, `:CMakeDebug [target]` builds only that target (`--target`), then starts its
+      `<target>: Launch` configuration by name. Without an argument it uses the only Launch
+      target, or asks with its own `vim.ui.select`: Vimspector's picker filters by the current
+      buffer's filetype and would hide every configuration from, say, `CMakeLists.txt`. It never
+      regenerates `.vimspector.json` (that would discard edits), and it refuses outside a CMake
+      project.
+- Generated launch configurations use `"args": []` rather than the template's `*${args}` prompt,
+  so a target starts in one step; the file's header comment says to add arguments there.
+- Generated launch configurations set `"runInTerminal": true`, like the template's `Launch` (see
+  the step-5 note): the program runs in a Vimspector terminal with colours, and breakpoints bind
+  as before. Attach configurations don't set it.
+- [x] Verify on magister: `:VimspectorInitCpp` → pick `magister` → the window opens and renders the
       triangle under the debugger. If Vulkan can't find a driver, add the needed variables
       (from `$VULKAN_HOME/setup-env.sh`) to the generated config's `env`.
-- [ ] Verify on magister: a breakpoint in `src/engine/engine.cpp` (the `magister_engine` static
-      library) binds and stops, and so does one in the `src/main.cpp` render loop.
-- [ ] Verify on magister: pause (`F6`) while rendering stops in a sensible frame, and continue resumes
+      Note: no `env` was needed. The loader finds the system ICDs in
+      `/usr/local/share/vulkan/icd.d/` (MoltenVK, KosmicKrisp), and the debug console shows
+      "Draw Fence Created" under the debugger.
+- [x] Verify on magister: a breakpoint in `magister_engine` library code binds and stops, and so
+      does one in the `src/main.cpp` render loop. Under `magister`, library code is hit at
+      `src/engine/engine.h:17` (the inline constructor). Nothing from `engine.cpp` is linked into
+      the game: `main.cpp` only constructs `magister::Engine`, and `nm -C build/debug/magister`
+      shows only `Engine::Engine()`, so an `engine.cpp` breakpoint stays pending there. Under
+      `magister_engine_tests`, `src/engine/engine.cpp:6` (`Engine::name()`) binds and stops.
+      Stepping into the Vulkan API from magister also works (user, 2026-11-08).
+- [x] Verify on magister: pause (`F6`) while rendering stops in a sensible frame, and continue resumes
       rendering.
-- [ ] Verify on magister: pick `magister_engine_tests`; a breakpoint inside a GoogleTest test body
+- [x] Verify on magister: pick `magister_engine_tests`; a breakpoint inside a GoogleTest test body
       stops.
-- [ ] Verify an edit → `:CMakeDebug` cycle on magister rebuilds and the breakpoint still binds.
+- [x] Verify an edit → `:CMakeDebug` cycle on magister rebuilds and the breakpoint still binds.
 - [ ] **Magister repo change** (separate repo): add `.vimspector.json` and `.vimspector.session` to
       magister's `.gitignore`. Both are regenerable / personal state (decided 2026-11-08).
 
@@ -279,6 +327,9 @@ lldb-dap; it got the same values from both compilers' builds.
       and the attach/hardened-runtime note.
 - [ ] `CLAUDE.md` Debugging section: say that `<S-F5>` (Stop) and `,DX` detach silently, while
       `:VimspectorReset` asks "Terminate debuggee?" and answering Y kills an attached process.
+- [ ] `CLAUDE.md` Debugging section, known issue: `vimspector#ClearBreakpoints()` (or "Clr All"
+      in the breakpoints window) during a session leaves the breakpoints active in lldb-dap (see
+      "Findings carried into the plan"). Clear them one by one (`F9`), or restart the session.
 - [ ] `research/cpp-debugging.md`: record the decisions above, the formatter/expression test
       results, and the `import-std-module` crash. Correct its claim that `lldb-dap` isn't on
       `PATH` (it is, via `~/.zshrc`).
@@ -292,5 +343,6 @@ lldb-dap; it got the same values from both compilers' builds.
 
 - [ ] Steps 1–9 are fully checked.
 - [ ] Magister can be debugged end to end: configure via preset, build, launch `magister`, break in
-      `magister_engine` code, inspect locals, with the triangle rendering.
+      `magister_engine` library code (`engine.h:17` under `magister`; `engine.cpp:6` under
+      `magister_engine_tests`), inspect locals, with the triangle rendering.
 - [ ] Attaching to a running magister works both by PID and with `waitFor`.

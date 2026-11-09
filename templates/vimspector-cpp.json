@@ -23,7 +23,10 @@
         // Split like a shell command line; an empty answer passes no arguments.
         "args": ["*${args}"],
         "cwd": "${workspaceRoot}",
-        "stopOnEntry": false
+        "stopOnEntry": false,
+        // Runs the program in a Vimspector terminal window (a real TTY: colours render, stdin
+        // works) instead of sending its output to the Console, which shows escape codes raw.
+        "runInTerminal": true
 
         // Path remapping (binaries built elsewhere): use lldb-dap's "sourceMap", an array of
         // [from, to] pairs or a {"from": "to"} object. Never set "initCommands" here: it

@@ -15,6 +15,9 @@ vim.opt.relativenumber = true
 -- Text width
 vim.opt.textwidth = 140
 
+-- Up to two signs per line, so a breakpoint shows next to gitgutter's change marker instead of hiding it
+vim.opt.signcolumn = 'auto:2'
+
 -- Enable mouse support
 vim.opt.mouse = 'a'
 
