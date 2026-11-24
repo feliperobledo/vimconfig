@@ -323,16 +323,16 @@ lldb-dap; it got the same values from both compilers' builds.
 
 ## 8. End-to-end verification
 
-- [ ] Single-file program: `F9` breakpoint, `F5` launch, stops on the line with correct locals
+- [x] Single-file program: `F9` breakpoint, `F5` launch, stops on the line with correct locals
       (first run of `lldb-dap` *through Vimspector*).
-- [ ] Variables window renders `vector`, `string`, `map`, `optional`, `variant`, `span`,
+- [x] Variables window renders `vector`, `string`, `map`, `optional`, `variant`, `span`,
       `unique_ptr` and `expected`.
-- [ ] Watches and hover (`,Di`) evaluate expressions; `target.import-std-module` remains off.
-- [ ] Step over / into / out, run to cursor, pause, stop and restart all work.
-- [ ] Conditional breakpoint and function breakpoint both stop correctly.
-- [ ] Breakpoint signs are visible on lines gitgutter has marked.
-- [ ] Java debugging via `nvim-java` / `nvim-dap` still works and has no new keymaps.
-- [ ] Startup is clean (`nvim` with no errors; `:checkhealth vimspector` if available).
+- [x] Watches and hover (`,Di`) evaluate expressions; `target.import-std-module` remains off.
+- [x] Step over / into / out, run to cursor, pause, stop and restart all work.
+- [x] Conditional breakpoint and function breakpoint both stop correctly.
+- [x] Breakpoint signs are visible on lines gitgutter has marked.
+- [x] Java debugging via `nvim-java` / `nvim-dap` still works and has no new keymaps.
+- [x] Startup is clean (`nvim` with no errors; `:checkhealth vimspector` if available).
 
 ## 9. Documentation
 
