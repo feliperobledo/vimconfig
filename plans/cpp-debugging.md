@@ -336,18 +336,18 @@ lldb-dap; it got the same values from both compilers' builds.
 
 ## 9. Documentation
 
-- [ ] `CLAUDE.md`: add a "Debugging" section — Vimspector + lldb-dap, key table,
+- [x] `CLAUDE.md`: add a "Debugging" section — Vimspector + lldb-dap, key table,
       `:VimspectorInitCpp`, `:CMakeDebug`, the `std::expected` formatter, the `initCommands` rule,
       and the attach/hardened-runtime note.
-- [ ] `CLAUDE.md` Debugging section: say that `<S-F5>` (Stop) and `,DX` detach silently, while
+- [x] `CLAUDE.md` Debugging section: say that `<S-F5>` (Stop) and `,DX` detach silently, while
       `:VimspectorReset` asks "Terminate debuggee?" and answering Y kills an attached process.
-- [ ] `CLAUDE.md` Debugging section, known issue: `vimspector#ClearBreakpoints()` (or "Clr All"
+- [x] `CLAUDE.md` Debugging section, known issue: `vimspector#ClearBreakpoints()` (or "Clr All"
       in the breakpoints window) during a session leaves the breakpoints active in lldb-dap (see
       "Findings carried into the plan"). Clear them one by one (`F9`), or restart the session.
-- [ ] `research/cpp-debugging.md`: record the decisions above, the formatter/expression test
+- [x] `research/cpp-debugging.md`: record the decisions above, the formatter/expression test
       results, and the `import-std-module` crash. Correct its claim that `lldb-dap` isn't on
       `PATH` (it is, via `~/.zshrc`).
-- [ ] `research/vim-pack-migration.md`: update the build-hook list (around lines 155–158) — remove
+- [x] `research/vim-pack-migration.md`: update the build-hook list (around lines 155–158) — remove
       the deleted `lua/plugins/nvim_gdb.lua` entry and add `lua/plugins/vimspector.lua`'s `go build`
       of `vimspector_process_list`.
 
@@ -356,7 +356,7 @@ lldb-dap; it got the same values from both compilers' builds.
 ## Definition of Done
 
 - [ ] Steps 1–9 are fully checked.
-- [ ] Magister can be debugged end to end: configure via preset, build, launch `magister`, break in
+- [x] Magister can be debugged end to end: configure via preset, build, launch `magister`, break in
       `magister_engine` library code (`engine.h:17` under `magister`; `engine.cpp:6` under
       `magister_engine_tests`), inspect locals, with the triangle rendering.
-- [ ] Attaching to a running magister works both by PID and with `waitFor`.
+- [x] Attaching to a running magister works both by PID and with `waitFor`.

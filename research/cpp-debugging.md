@@ -9,10 +9,90 @@
 - Updated 2026-09-20 after the decision to use Vimspector as the debug client (see "Decision: Vimspector")
 - Updated 2026-09-20 with attach-mode verification on macOS (see "Attach Mode on macOS")
 - Claims marked **[verified]** were tested on this machine during the research; everything else is reasoning about the config or about upstream behavior.
+- Updated 2026-11-24 with the implementation outcome (see "Outcome (2026-11-24)") and a correction: `lldb-dap` *is* on `PATH` in shells (see section 1 under "Adapter Options").
 
 Research only for the debugging work — no debugging code has been written. The one exception is the
 Mason `ensure_installed` bug documented below, which was fixed in the same session at the user's
 request.
+
+## Outcome (2026-11-24)
+
+The plan built from this research: [`plans/cpp-debugging.md`](/Users/feliperobledo/src/vimconfig/plans/cpp-debugging.md),
+with per-step reviews under [`reviews/plans/cpp-debugging/`](/Users/feliperobledo/src/vimconfig/reviews/plans/cpp-debugging/).
+How to use and maintain the result is in `CLAUDE.md`, "Debugging". The body below is the original
+research, left as written apart from the `PATH` correction; where it disagrees with this section,
+this section wins.
+
+### Final decisions
+
+- **Adapter: a custom Vimspector adapter for Homebrew's `lldb-dap`** (22.1.8), declared in
+  `g:vimspector_adapters` in `lua/plugins/vimspector.lua`. Not the `CodeLLDB` gadget the research
+  recommended: no `install_gadget.py`, no Mason package. The lazy `build` step only does the
+  `go build` of `vimspector_process_list`.
+- **`nvim-gdb` removed** (`lua/plugins/nvim_gdb.lua` deleted), which also freed `,d` from its
+  `timeoutlen` wait. Debug leader keys live under `,D`.
+- **`nvim-dap` left to `nvim-java`**, no keymaps or UI.
+- **Keys:** explicit `<Plug>` mappings on a Visual-Studio-like F-row (`F5`, `S-F5`, `C-S-F5`, `F6`,
+  `F8`–`F11`, `S-F11`), plus `,F9`, `,F10`, `,Di`, `,DX`. `g:vimspector_enable_mappings` unset.
+- **Attach and CMake integration were required**, not optional. `:VimspectorInitCpp` copies a
+  generic template or, in a CMake project, generates per-target configs through the CMake File API
+  (presets first); `:CMakeDebug [target]` builds and launches. Acceptance testing ran on the
+  magister project (Apple clang 21, not the Homebrew clang 22 used here).
+- **Breakpoints persist** through the existing `F2`/`F3` session keys (`.vimspector.session`).
+
+### Test results
+
+- **Formatters.** LLDB 22's built-in libc++ formatters render `vector`, `string`, `map`,
+  `optional`, `variant`, `span` and `unique_ptr`. `std::expected` showed raw internals, so
+  `lldb/libcxx_expected.py` adds a summary (`has value` / `has error`) and one `Value` / `Error`
+  child, finding members by name because libc++'s layout varies by type. Verified in plain `lldb`
+  (value, error, `expected<void, E>`, trivially destructible `E`, `vector` payload, tail-padded
+  types) with both Homebrew clang 22 and Apple clang 21 builds, which had identical layouts, and
+  later in Vimspector's variables window.
+- **Expressions.** Evaluation works, but only for functions present in the binary: `v.size()`
+  works when the program calls it; `v[1]`, `o.value()` and `*up` fail. Hover (`,Di`) only
+  evaluates variable/member paths, not arithmetic; watches do arithmetic.
+- **`target.import-std-module`.** Setting it `true` fixed some of those expressions but **crashed
+  LLDB** on `m.at("b")`. It stays off.
+
+### Findings that change what the research said
+
+- **`lldb-dap` is on `PATH`** in shells (`~/.zshrc` adds Homebrew's `llvm/bin`), so
+  `exepath("lldb-dap")` normally hits. The absolute fallback is kept for launches that don't
+  inherit the shell's `PATH`.
+- **No `pidSelect` in the adapter.** An adapter-level `attach = { pidSelect = "ask" }` was tried
+  and removed: Vimspector applies it to every attach config without a `pid`, which hijacked
+  `waitFor` configs with an unfiltered PID prompt.
+- **`PickProcess` filters by process name with a regex**, not by path. The attach-by-PID entry
+  sketched under "Vimspector-specific notes for attach" doesn't work as written: the working form
+  is `"pid#json": "${PickProcess(\"^<basename>$$\")}"`. The anchored basename pre-fills a single
+  match; `#json` is required because substitution yields a string and lldb-dap rejects a string
+  `pid`.
+- **`waitFor` attaches about 40–50 ms after the process starts** (measured on magister, where
+  it stops after `glfwContext.init()`). The "caught it at the very first iteration" result above
+  was a slow test loop; `waitFor` can't catch the first lines of `main`.
+- **Exception-filter prompts.** Without a `breakpoints.exception` block answering lldb-dap's four
+  filters (`cpp_throw`, `cpp_catch`, `objc_throw`, `objc_catch`), Vimspector asks four Y/N
+  questions on every start (headless, the launch stalled). Vimspector reads the block per
+  configuration only, so every configuration carries it.
+- **`initCommands` vs. `sourceMap`.** Vimspector merges the adapter's `configuration` and the
+  project's shallowly, so a project `initCommands` replaces the adapter's list (and the formatter
+  import). The `target.source-map` via `initCommands` advice under "Things That Will Bite" is
+  replaced by lldb-dap's `sourceMap`.
+- **`runInTerminal`.** Without it, the program's output goes to Vimspector's Console, which shows
+  colour escape codes raw. Launch configs set `"runInTerminal": true`: lldb-dap starts the program
+  through `lldb-dap --launch-target` in a Vimspector terminal and attaches to it.
+- **`terminateCommands`.** Because of that attach, Stop / Reset / Restart (a bare `disconnect`)
+  only detached, leaving launched programs running (and two after Restart). lldb-dap 22.1.8 has no
+  option to change that, and `terminateCommands` run *after* the detach, so `process kill` fails.
+  Launch configs carry a `terminateCommands` script that SIGKILLs the pid lldb remembers when the
+  state is `detached` (not `exited`). Attach configs don't, so they still only detach. Trade-off:
+  `:VimspectorReset` → "Terminate debuggee?" → N also ends a launched program.
+- **`ClearBreakpoints` quirk.** `vimspector#ClearBreakpoints()` ("Clr All") during a session
+  empties Vimspector's list but never re-sends the emptied files, so lldb-dap keeps stopping
+  there. Clearing one by one (`F9`) or restarting works.
+- **Signs.** Breakpoint sign priority 12 beats gitgutter's 10, and `signcolumn=auto:2` shows both
+  on one line instead of hiding the gitgutter marker.
 
 ## Summary
 
@@ -140,9 +220,10 @@ Exception breakpoint filters offered: `cpp_throw`, `cpp_catch`, `objc_throw`, `o
 Pros: no Mason package to maintain, no VSIX unpacking, versioned in lockstep with the `clang++` that
 built the binary, native `arm64`, maintained by the LLVM project. Cons: it is a Homebrew dependency
 outside Mason's management, so the path must be resolved rather than assumed
-(`vim.fn.exepath("lldb-dap")` is empty unless Homebrew's `llvm/bin` is on `PATH` — it is not on the
-default `PATH` here, since Homebrew keeps `llvm` keg-only; the absolute path or an explicit
-`opt/llvm/bin` lookup is needed).
+(`vim.fn.exepath("lldb-dap")` is empty unless Homebrew's `llvm/bin` is on `PATH`. Homebrew keeps
+`llvm` keg-only, but *corrected 2026-11-24*: `~/.zshrc` puts `llvm/bin` on `PATH`, so `exepath`
+hits when Neovim starts from a shell. The absolute path is still needed as a fallback for launches
+that don't inherit it).
 
 `nvim-dap` talks to it as a plain `executable` adapter over stdio.
 
@@ -444,7 +525,7 @@ return {
   config = function()
     local dap = require("dap")
 
-    -- Homebrew keeps llvm keg-only, so lldb-dap is not on PATH.
+    -- Homebrew keeps llvm keg-only; ~/.zshrc puts it on PATH, but not every launch inherits that.
     local lldb_dap = vim.fn.exepath("lldb-dap")
     if lldb_dap == "" then lldb_dap = "/opt/homebrew/opt/llvm/bin/lldb-dap" end
 
