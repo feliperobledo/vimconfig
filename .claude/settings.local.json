@@ -6,8 +6,5 @@
       "WebFetch(domain:dotfiles.substack.com)",
       "WebFetch(domain:www.qu8n.com)"
     ]
-  },
-  "env": {
-    "ANTHROPIC_BASE_URL": "http://127.0.0.1:8787"
   }
 }
