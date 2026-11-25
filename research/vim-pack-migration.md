@@ -155,7 +155,7 @@ The migration would need a deliberate load model rather than relying on `lazy.nv
 This repo has plugins that currently rely on `build` directives, including:
 
 - [`lua/plugins/nvim-treesitter.lua`](/Users/feliperobledo/src/vimconfig/lua/plugins/nvim-treesitter.lua) with `:TSUpdate`
-- [`lua/plugins/nvim_gdb.lua`](/Users/feliperobledo/src/vimconfig/lua/plugins/nvim_gdb.lua) with `./install.sh`
+- [`lua/plugins/vimspector.lua`](/Users/feliperobledo/src/vimconfig/lua/plugins/vimspector.lua) with a `build` function that runs `go build` in `support/vimspector_process_list` (the helper behind `${PickProcess()}`)
 
 The `vim.pack` docs describe using `PackChanged` autocmd hooks for install/update actions.
 

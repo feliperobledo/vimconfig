@@ -11,23 +11,48 @@ map("", "<Down>", "<Nop>")
 map("", "<Left>", "<Nop>")
 map("", "<Right>", "<Nop>")
 
--- This keymap changes navigation between windows to only have to use 
--- Ctrl+h/j/k/l
-map("n", "<C-J>", "<C-W>j<C-W>_")
-map("n", "<C-K>", "<C-W>k<C-W>_")
-map("n", "<C-L>", "<C-W>l<C-W>_")
-map("n", "<C-H>", "<C-W>h<C-W>_")
-
--- Collapse each opened file into a single line with its filename
-vim.opt.wmh = 0
-
 -- Tab navigation uses the built-in gt/gT; F8 and F9 are left free for the debugger.
 map("n", "<C-t>", ":tabnew<CR>")
 map("i", "<C-t>", "<Esc>:tabnew<CR>i")
 
 -- Sessions
-map("n", "<F2>", ":mksession! Session.vim<CR>")
-map("n", "<F3>", ":source Session.vim<CR>")
+-- Vimspector's session (breakpoints) lives next to Session.vim, in the cwd. An explicit
+-- path skips Vimspector's upward search from the current buffer, which could pick up a
+-- stray session file in a parent directory.
+local function vimspector_session_file()
+  local name = vim.g.vimspector_session_file_name or ".vimspector.session"
+  return vim.fn.getcwd() .. "/" .. name
+end
+
+map("n", "<F2>", function()
+  vim.cmd("mksession! Session.vim")
+  local file = vimspector_session_file()
+  local breakpoints = vim.fn["vimspector#GetBreakpointsAsQuickFix"]()
+  local has_breakpoints = type(breakpoints) == "table" and #breakpoints > 0
+  -- Save only when there is something to keep, or a file to update, so clearing
+  -- every breakpoint still sticks but projects that never debug stay clean.
+  if has_breakpoints or vim.fn.filereadable(file) == 1 then
+    -- What :VimspectorMkSession runs; calling it directly avoids escaping the path.
+    vim.fn["vimspector#WriteSessionFile"](file)
+  end
+end)
+
+map("n", "<F3>", function()
+  -- Resolve before sourcing: Session.vim may change the cwd.
+  local file = vimspector_session_file()
+  -- pcall keeps a missing Session.vim to the one-line Vim error, not a Lua traceback.
+  local ok, err = pcall(vim.cmd, "source Session.vim")
+  if not ok then
+    vim.notify(err:match("E%d+:.*") or err, vim.log.levels.ERROR)
+    return
+  end
+  -- After Session.vim, so signs go straight into the buffers it reopened (Vimspector
+  -- places signs for files opened later itself). Skipped when there's no file: the bare
+  -- command would report an error.
+  if vim.fn.filereadable(file) == 1 then
+    vim.fn["vimspector#ReadSessionFile"](file)
+  end
+end)
 
 -- Telescope mappings (since “latest Neovim”, we can assume Telescope exists)
 map("n", "<leader>ff", "<cmd>Telescope find_files<cr>")

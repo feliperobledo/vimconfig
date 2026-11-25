@@ -11,9 +11,11 @@ A personal Neovim configuration undergoing an active, planned migration from a C
 **Entry point**: `init.lua` loads modules in order: `config.options` → `config.lazy` → `config.keymaps` → `config.commands`
 
 **Key directories**:
-- `lua/config/` — core modules (options, keymaps, commands, lazy bootstrap)
+- `lua/config/` — core modules (options, keymaps, commands, lazy bootstrap, `cmake_debug` for `:VimspectorInitCpp` / `:CMakeDebug`)
 - `lua/plugins/` — one file per plugin spec (loaded by lazy.nvim)
 - `ftplugin/` — filetype-specific overrides (currently java, cpp, cs)
+- `templates/` — `vimspector-cpp.json`, the generic C/C++ `.vimspector.json` copied by `:VimspectorInitCpp`
+- `lldb/` — LLDB Python formatters (`libcxx_expected.py`), loaded by the Vimspector adapter
 
 **Plugin manager**: lazy.nvim, bootstrapped in `lua/config/lazy.lua`. Run `:Lazy sync` to install/update, `:Lazy clean` to remove unused. Lock file: `lazy-lock.json`.
 
@@ -41,7 +43,7 @@ When editing ftplugin files, prefer Neovim defaults unless a filetype needs a sp
 - `:Mason` — open Mason UI to manage language servers
 - `:checkhealth` — diagnose configuration issues
 
-**Session management**: F2 saves session, F3 loads (`Session.vim` via obsession).
+**Session management**: F2 writes `Session.vim` with `:mksession!`, F3 sources it, plus Vimspector breakpoints in `.vimspector.session` (see Debugging).
 
 **Key leader**: `,` (both `mapleader` and `maplocalleader`)
 

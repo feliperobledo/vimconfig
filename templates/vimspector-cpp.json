@@ -1,0 +1,92 @@
+{
+  "$schema": "https://puremourning.github.io/vimspector/schema/vimspector.schema.json",
+  // Written by :VimspectorInitCpp. Vimspector strips // and /* */ comments before parsing.
+  "configurations": {
+    "Launch": {
+      "adapter": "lldb-dap",
+      "filetypes": ["c", "cpp"],
+      // Answers lldb-dap's exception filters up front; without this, every launch asks
+      // four Y/N questions. Set "cpp_throw": "Y" to stop wherever a C++ exception is thrown.
+      "breakpoints": {
+        "exception": {
+          "cpp_throw": "N",
+          "cpp_catch": "N",
+          "objc_throw": "N",
+          "objc_catch": "N"
+        }
+      },
+      "configuration": {
+        "request": "launch",
+        // ${program} and ${args} are asked for on first launch and remembered as defaults.
+        // ${program} is relative to this file's directory (${workspaceRoot}).
+        "program": "${workspaceRoot}/${program}",
+        // Split like a shell command line; an empty answer passes no arguments.
+        "args": ["*${args}"],
+        "cwd": "${workspaceRoot}",
+        "stopOnEntry": false,
+        // Runs the program in a Vimspector terminal window (a real TTY: colours render, stdin
+        // works) instead of sending its output to the Console, which shows escape codes raw.
+        "runInTerminal": true,
+        // runInTerminal makes lldb-dap attach to the program it started, so Stop / ,DX / Restart
+        // (a bare disconnect) would only detach. These run after that detach: kill the program
+        // if the session ended by detaching, not when it exited. Keep this out of attach configs.
+        "terminateCommands": ["script import os, signal; p = lldb.debugger.GetSelectedTarget().GetProcess(); os.kill(p.GetProcessID(), signal.SIGKILL) if p.GetState() == lldb.eStateDetached else None"]
+
+        // Path remapping (binaries built elsewhere): use lldb-dap's "sourceMap", an array of
+        // [from, to] pairs or a {"from": "to"} object. Never set "initCommands" here: it
+        // replaces the adapter's list, which loads the std::expected formatter.
+        // "sourceMap": [["/build/machine/src", "${workspaceRoot}"]]
+      }
+    },
+    // Attach configurations. Stopping or resetting the debugger detaches and leaves the
+    // process running: Vimspector's disconnect omits terminateDebuggee and lldb-dap defaults
+    // it to false for attach. For these attach configs only: if :VimspectorReset asks
+    // "Terminate debuggee?", answer N or D to keep the process running. A program started by
+    // Launch is ended either way (its terminateCommands kill it after the detach).
+    // If attach fails with "Trying to resume but the async thread is dead", the target is
+    // hardened-runtime signed: see CLAUDE.md, "Debugging".
+    "Attach (pick process)": {
+      "adapter": "lldb-dap",
+      "filetypes": ["c", "cpp"],
+      "breakpoints": {
+        "exception": {
+          "cpp_throw": "N",
+          "cpp_catch": "N",
+          "objc_throw": "N",
+          "objc_catch": "N"
+        }
+      },
+      // The picker filters by process name, but ${program} is a path: take its basename.
+      // ${program} is the variable Launch asks for; its last answer is offered as the default.
+      "variables": {
+        "programName": { "shell": ["basename", "${program}"] }
+      },
+      "configuration": {
+        "request": "attach",
+        // Lists this user's processes named exactly ${programName} ("$$" is a literal "$");
+        // a single match is offered as the default. "#json" sends the pid as a number.
+        "pid#json": "${PickProcess(\"^${programName}$$\")}"
+      }
+    },
+    "Attach (wait for launch)": {
+      "adapter": "lldb-dap",
+      "filetypes": ["c", "cpp"],
+      "breakpoints": {
+        "exception": {
+          "cpp_throw": "N",
+          "cpp_catch": "N",
+          "objc_throw": "N",
+          "objc_catch": "N"
+        }
+      },
+      "configuration": {
+        "request": "attach",
+        // Waits for the next process started from this binary and attaches tens of ms after
+        // it starts: breaks in startup code (not the first lines of main) of a program
+        // launched elsewhere.
+        "program": "${workspaceRoot}/${program}",
+        "waitFor": true
+      }
+    }
+  }
+}
