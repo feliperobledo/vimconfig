@@ -11,16 +11,6 @@ map("", "<Down>", "<Nop>")
 map("", "<Left>", "<Nop>")
 map("", "<Right>", "<Nop>")
 
--- This keymap changes navigation between windows to only have to use 
--- Ctrl+h/j/k/l
-map("n", "<C-J>", "<C-W>j<C-W>_")
-map("n", "<C-K>", "<C-W>k<C-W>_")
-map("n", "<C-L>", "<C-W>l<C-W>_")
-map("n", "<C-H>", "<C-W>h<C-W>_")
-
--- Collapse each opened file into a single line with its filename
-vim.opt.wmh = 0
-
 -- Tab navigation uses the built-in gt/gT; F8 and F9 are left free for the debugger.
 map("n", "<C-t>", ":tabnew<CR>")
 map("i", "<C-t>", "<Esc>:tabnew<CR>i")
